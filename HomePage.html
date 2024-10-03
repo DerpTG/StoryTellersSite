@@ -1,10 +1,110 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storytellers - Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="StoryStyles.css">
+	<style>
+        .hero-section {
+            background-image: url('Assets/banner.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
 
+        .hero-section .hero-text {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Storytellers</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Teens And Young Adult</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+                <button class="btn btn-primary mr-2" onclick="location.href='ShopperManagement.html'">Sign Up / Login</button>
+                <button class="btn btn-outline-dark" onclick="location.href='#'">
+                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="discount-banner text-center bg-danger text-white py-2">
+        <h3>15% OFF Nonfiction Books</h3>
+        <p>Offer ends Tuesday, October 15th at 11am EDT.</p>
+        <button class="btn btn-light">Shop The Sale</button>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-text">
+            <h2>More Books, Less Bucks</h2>
+            <p>Brand new books at 50%+ off list prices, every day.</p>
+            <button class="btn btn-primary">Start My Book Haul</button>
+        </div>
+    </div>
+
+    <section class="container book-showcase mt-5">
+        <div class="text-center mb-5">
+            <h2>More Books, Less Bucks</h2>
+            <p>Brand new books at 50%+ off list prices, every day.</p>
+            <button class="btn btn-primary">Start My Book Haul</button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <img src="Assets/silencebook.jpg" class="img-fluid" alt="Silence for the Dead">
+                <h4>Silence for the Dead</h4>
+                <p>$5.49<br>List Price: $12.99</p>
+                <button class="btn btn-outline-dark">Add to Cart</button>
+            </div>
+            <div class="col-md-3">
+                <img src="Assets/courtofthorns.jpg" class="img-fluid" alt="A Court of Thorns and Roses">
+                <h4>A Court of Thorns and Roses</h4>
+                <p>$37.49<br>List Price: $93.00</p>
+                <button class="btn btn-outline-dark">Add to Cart</button>
+            </div>
+            <div class="col-md-3">
+                <img src="Assets/deadromantics.jpg" class="img-fluid" alt="The Dead Romantics">
+                <h4>The Dead Romantics</h4>
+                <p>$6.99<br>List Price: $17.00</p>
+                <button class="btn btn-outline-dark">Add to Cart</button>
+            </div>
+            <div class="col-md-3">
+                <img src="Assets/betterthanthemovies.jpg" class="img-fluid" alt="Better Than the Movies">
+                <h4>Better Than the Movies</h4>
+                <p>$5.99<br>List Price: $12.99</p>
+                <button class="btn btn-outline-dark">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center bg-dark text-white py-4">
+        <p>&copy; 2024 Storytellers. All rights reserved.</p>
+        <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
