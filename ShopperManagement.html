@@ -1,10 +1,190 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopper Management - Storytellers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="StoryStyles.css">
+    <style>
+        .shopper-management-section {
+            padding: 50px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
 
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="HomePage.html">Storytellers</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Teens And Young Adult</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+                <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
+                <button class="btn btn-outline-dark">
+                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="shopper-management-section">
+        <div class="form-container">
+            <h2>Shopper Management</h2>
+            <form id="shopperForm">
+                <div class="form-group">
+                    <label for="username">Username (required)</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+                    <div class="error" id="usernameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address (required)</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                    <div class="error" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number (optional)</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age (required)</label>
+                    <input type="number" class="form-control" id="age" placeholder="Enter age" required>
+                    <div class="error" id="ageError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address (required)</label>
+                    <textarea class="form-control" id="address" placeholder="Enter address" required></textarea>
+                    <div class="error" id="addressError"></div>
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-success" onclick="createShopper()">Create</button>
+                    <button type="button" class="btn btn-primary" onclick="updateShopper()">Update</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="text-center bg-dark text-white py-4">
+        <p>&copy; 2024 Storytellers. All rights reserved.</p>
+        <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+    </footer>
+
+    <script>
+        let shoppers = [];
+
+        function createShopper() {
+            let isValid = validateForm();
+            if (!isValid) return;
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            const existingShopper = shoppers.find(shopper => shopper.username === username);
+
+            if (existingShopper) {
+                alert('A shopper with this username already exists!');
+            } else {
+                const newShopper = { username, email, phone, age, address };
+                shoppers.push(newShopper);
+                alert('Shopper created successfully!');
+                console.log('Shoppers:', shoppers);
+            }
+        }
+
+        function updateShopper() {
+            let isValid = validateForm();
+            if (!isValid) return;
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            const shopperIndex = shoppers.findIndex(shopper => shopper.username === username);
+
+            if (shopperIndex === -1) {
+                alert('Shopper not found!');
+            } else {
+                shoppers[shopperIndex] = { username, email, phone, age, address };
+                alert('Shopper updated successfully!');
+                console.log('Shoppers:', shoppers);
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+            document.querySelectorAll('.error').forEach(error => error.textContent = '');
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (username === '') {
+                document.getElementById('usernameError').textContent = 'Username is required.';
+                isValid = false;
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email === '') {
+                document.getElementById('emailError').textContent = 'Email is required.';
+                isValid = false;
+            } else if (!emailPattern.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            if (age === '') {
+                document.getElementById('ageError').textContent = 'Age is required.';
+                isValid = false;
+            }
+
+            if (address === '') {
+                document.getElementById('addressError').textContent = 'Address is required.';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
