@@ -101,7 +101,7 @@
     </footer>
 
     <script>
-        let shoppers = [];
+        let shoppersJSON = {};
 
         function createShopper() {
             let isValid = validateForm();
@@ -113,15 +113,13 @@
             const age = document.getElementById('age').value.trim();
             const address = document.getElementById('address').value.trim();
 
-            const existingShopper = shoppers.find(shopper => shopper.username === username);
-
-            if (existingShopper) {
+            if (shoppersJSON[username]) {
                 alert('A shopper with this username already exists!');
             } else {
-                const newShopper = { username, email, phone, age, address };
-                shoppers.push(newShopper);
+                shoppersJSON[username] = { username, email, phone, age, address };
                 alert('Shopper created successfully!');
-                console.log('Shoppers:', shoppers);
+
+                console.log('Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
             }
         }
 
@@ -135,14 +133,13 @@
             const age = document.getElementById('age').value.trim();
             const address = document.getElementById('address').value.trim();
 
-            const shopperIndex = shoppers.findIndex(shopper => shopper.username === username);
-
-            if (shopperIndex === -1) {
+            if (!shoppersJSON[username]) {
                 alert('Shopper not found!');
             } else {
-                shoppers[shopperIndex] = { username, email, phone, age, address };
+                shoppersJSON[username] = { username, email, phone, age, address };
                 alert('Shopper updated successfully!');
-                console.log('Shoppers:', shoppers);
+
+                console.log('Updated Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
             }
         }
 
@@ -185,6 +182,6 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrap.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
