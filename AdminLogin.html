@@ -53,43 +53,73 @@
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label for="adminUsername">Username</label>
-                    <input type="text" class="form-control" id="adminUsername" placeholder="Enter username" required>
+                    <input type="text" class="form-control" id="adminUsername" placeholder="Enter username" required maxlength="30">
+                    <div class="error-message" id="usernameError">Username exceeds length limit</div>
                 </div>
                 <div class="form-group">
                     <label for="adminPassword">Password</label>
-                    <input type="password" class="form-control" id="adminPassword" placeholder="Enter password" required>
+                    <input type="password" class="form-control" id="adminPassword" placeholder="Enter password" required maxlength="30">
+                    <div class="error-message" id="passwordError">Password exceeds length limit</div>
                 </div>
                 <div class="error-message" id="errorMessage">Incorrect username or password</div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
         </div>
     </div>
-	
-	<footer class="text-center bg-dark text-white py-4">
+    
+    <footer class="text-center bg-dark text-white py-4">
         <p>&copy; 2024 Storytellers. All rights reserved.</p>
         <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
     <script>
-        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        $(document).ready(function() {
+            let loginAttempts = 0;
+            const maxAttempts = 5;
+            
+            $('#adminLoginForm').submit(function(e) {
+                e.preventDefault();
 
-            const correctUsername = 'admin';
-            const correctPassword = 'everystorycounts';
+                // Limit length for buffer overflow prevention
+                const username = $('#adminUsername').val().trim();
+                const password = $('#adminPassword').val().trim();
 
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
+                const correctUsername = 'admin';
+                const correctPassword = 'everystorycounts';
 
-            if (username === correctUsername && password === correctPassword) {
-                window.location.href = 'AdminCentral.html';
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';
-            }
+                // Check for buffer overflow attempts by limiting length
+                if (username.length > 30 || password.length > 30) {
+                    if (username.length > 30) {
+                        $('#usernameError').show();
+                    } else {
+                        $('#usernameError').hide();
+                    }
+                    if (password.length > 30) {
+                        $('#passwordError').show();
+                    } else {
+                        $('#passwordError').hide();
+                    }
+                    return;
+                }
+
+                // Check login attempts to avoid brute force
+                if (loginAttempts >= maxAttempts) {
+                    alert('Maximum login attempts exceeded. Please try again later.');
+                    return;
+                }
+
+                if (username === correctUsername && password === correctPassword) {
+                    window.location.href = 'AdminCentral.html';
+                } else {
+                    loginAttempts++;
+                    $('#errorMessage').show();
+                }
+            });
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 </body>
 </html>
