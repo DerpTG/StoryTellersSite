@@ -88,8 +88,8 @@
                     <div class="error" id="addressError"></div>
                 </div>
                 <div class="btn-container">
-                    <button type="button" class="btn btn-success" onclick="createShopper()">Create</button>
-                    <button type="button" class="btn btn-primary" onclick="updateShopper()">Update</button>
+                    <button type="button" class="btn btn-success" id="createShopperBtn">Create</button>
+                    <button type="button" class="btn btn-primary" id="updateShopperBtn">Update</button>
                 </div>
             </form>
         </div>
@@ -100,88 +100,86 @@
         <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
     <script>
         let shoppersJSON = {};
 
-        function createShopper() {
-            let isValid = validateForm();
-            if (!isValid) return;
+        $(document).ready(function() {
+            $('#createShopperBtn').click(function() {
+                if (validateForm()) {
+                    const shopper = gatherShopperData();
+                    if (shoppersJSON[shopper.username]) {
+                        alert('A shopper with this username already exists!');
+                    } else {
+                        shoppersJSON[shopper.username] = shopper;
+                        alert('Shopper created successfully!');
+                        console.log('Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
+                    }
+                }
+            });
 
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const age = document.getElementById('age').value.trim();
-            const address = document.getElementById('address').value.trim();
+            $('#updateShopperBtn').click(function() {
+                if (validateForm()) {
+                    const shopper = gatherShopperData();
+                    if (!shoppersJSON[shopper.username]) {
+                        alert('Shopper not found!');
+                    } else {
+                        shoppersJSON[shopper.username] = shopper;
+                        alert('Shopper updated successfully!');
+                        console.log('Updated Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
+                    }
+                }
+            });
 
-            if (shoppersJSON[username]) {
-                alert('A shopper with this username already exists!');
-            } else {
-                shoppersJSON[username] = { username, email, phone, age, address };
-                alert('Shopper created successfully!');
+            function validateForm() {
+                let isValid = true;
+                $('.error').text('');
 
-                console.log('Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
-            }
-        }
+                const username = $('#username').val().trim();
+                const email = $('#email').val().trim();
+                const age = $('#age').val().trim();
+                const address = $('#address').val().trim();
 
-        function updateShopper() {
-            let isValid = validateForm();
-            if (!isValid) return;
+                if (!username) {
+                    $('#usernameError').text('Username is required.');
+                    isValid = false;
+                }
 
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const age = document.getElementById('age').value.trim();
-            const address = document.getElementById('address').value.trim();
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email) {
+                    $('#emailError').text('Email is required.');
+                    isValid = false;
+                } else if (!emailPattern.test(email)) {
+                    $('#emailError').text('Please enter a valid email address.');
+                    isValid = false;
+                }
 
-            if (!shoppersJSON[username]) {
-                alert('Shopper not found!');
-            } else {
-                shoppersJSON[username] = { username, email, phone, age, address };
-                alert('Shopper updated successfully!');
+                if (!age) {
+                    $('#ageError').text('Age is required.');
+                    isValid = false;
+                }
 
-                console.log('Updated Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
-            }
-        }
+                if (!address) {
+                    $('#addressError').text('Address is required.');
+                    isValid = false;
+                }
 
-        function validateForm() {
-            let isValid = true;
-            document.querySelectorAll('.error').forEach(error => error.textContent = '');
-
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const age = document.getElementById('age').value.trim();
-            const address = document.getElementById('address').value.trim();
-
-            if (username === '') {
-                document.getElementById('usernameError').textContent = 'Username is required.';
-                isValid = false;
-            }
-
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email === '') {
-                document.getElementById('emailError').textContent = 'Email is required.';
-                isValid = false;
-            } else if (!emailPattern.test(email)) {
-                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
-                isValid = false;
-            }
-
-            if (age === '') {
-                document.getElementById('ageError').textContent = 'Age is required.';
-                isValid = false;
+                return isValid;
             }
 
-            if (address === '') {
-                document.getElementById('addressError').textContent = 'Address is required.';
-                isValid = false;
+            function gatherShopperData() {
+                return {
+                    username: $('#username').val().trim(),
+                    email: $('#email').val().trim(),
+                    phone: $('#phone').val().trim(),
+                    age: $('#age').val().trim(),
+                    address: $('#address').val().trim()
+                };
             }
-
-            return isValid;
-        }
+        });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 </body>
 </html>
