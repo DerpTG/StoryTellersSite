@@ -120,86 +120,81 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 
     <script>
-     
-		
-	//here
-	    (document).ready(function() {
-    let productsJSON = {};
+        let productsJSON = {};
 
-    ('#createProductBtn').click(function() {
-        if (validateProductForm()) {
-            const product = gatherProductData();
-            if (productsJSON[product.productId]) {
-                alert('A product with this ID already exists!');
-            } else {
-                productsJSON[product.productId] = product;
-                alert('Product created successfully!');
-                console.log('Products JSON:', JSON.stringify(productsJSON, null, 2));
+        $(document).ready(function() {
+            $('#createProductBtn').click(function() {
+                if (validateForm()) {
+                    const product = gatherProductData();
+                    if (productsJSON[product.productId]) {
+                        alert('A product with this ID already exists!');
+                    } else {
+                        productsJSON[product.productId] = product;
+                        alert('Product created successfully!');
+                        console.log('Products JSON:', JSON.stringify(productsJSON, null, 2));
+                    }
+                }
+            });
+
+            $('#updateProductBtn').click(function() {
+                if (validateForm()) {
+                    const product = gatherProductData();
+                    if (!productsJSON[product.productId]) {
+                        alert('Product not found!');
+                    } else {
+                        productsJSON[product.productId] = product;
+                        alert('Product updated successfully!');
+                        console.log('Updated Products JSON:', JSON.stringify(productsJSON, null, 2));
+                    }
+                }
+            });
+
+            function validateForm() {
+                let isValid = true;
+                $('.error').text('');
+
+                const productId = $('#productId').val().trim();
+                const productDescription = $('#productDescription').val().trim();
+                const productCategory = $('#productCategory').val();
+                const productUOM = $('#productUOM').val();
+                const productPrice = $('#productPrice').val().trim();
+
+                if (!productId) {
+                    $('#productIdError').text('Product ID is required.');
+                    isValid = false;
+                }
+                if (!productDescription) {
+                    $('#productDescriptionError').text('Product description is required.');
+                    isValid = false;
+                }
+                if (!productCategory) {
+                    $('#productCategoryError').text('Product category is required.');
+                    isValid = false;
+                }
+                if (!productUOM) {
+                    $('#productUOMError').text('Unit of measure is required.');
+                    isValid = false;
+                }
+                if (!productPrice) {
+                    $('#productPriceError').text('Product price is required.');
+                    isValid = false;
+                }
+
+                return isValid;
             }
-        }
-    });
 
-    ('#updateProductBtn').click(function() {
-        if (validateProductForm()) {
-            const product = gatherProductData();
-            if (!productsJSON[product.productId]) {
-                alert('Product not found!');
-            } else {
-                productsJSON[product.productId] = product;
-                alert('Product updated successfully!');
-                console.log('Updated Products JSON:', JSON.stringify(productsJSON, null, 2));
+            function gatherProductData() {
+                return {
+                    productId: $('#productId').val().trim(),
+                    productDescription: $('#productDescription').val().trim(),
+                    productCategory: $('#productCategory').val(),
+                    productUOM: $('#productUOM').val(),
+                    productPrice: $('#productPrice').val().trim(),
+                    productWeight: $('#productWeight').val().trim()
+                };
             }
-        }
-    });
-
-    function validateProductForm() {
-        let isValid = true;
-        ('.error').text('');
-
-        const productId = ('#productId').val().trim();
-        const productDescription = ('#productDescription').val().trim();
-        const productCategory = ('#productCategory').val();
-        const productUOM = ('#productUOM').val();
-        const productPrice = ('#productPrice').val().trim();
-
-        if (!productId) {
-            ('#productIdError').text('Product ID required.');
-            isValid = false;
-        }
-
-        if (!productDescription) {
-            ('#productDescriptionError').text('Product Description required.');
-            isValid = false;
-        }
-
-        if (!productCategory) {
-            ('#productCategoryError').text('Product Category required.');
-            isValid = false;
-        }
-
-        if (!productUOM) {
-            ('#productUOMError').text('Product Unit of Measure required.');
-            isValid = false;
-        }
-
-        if (!productPrice) {
-            ('#productPriceError').text('Product Price required.');
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    function gatherProductData() {
-        return {
-            productId: ('#productId').val().trim(),
-            productDescription: ('#productDescription').val().trim(),
-            productCategory: ('#productCategory').val(),
-            productUOM: ('#productUOM').val(),
-            productPrice: ('#productPrice').val().trim(),
-            productWeight: ('#productWeight').val().trim()
-        };	
-		
+        });
     </script>
+
 </body>
 </html>
