@@ -127,10 +127,10 @@
                 if (validateForm()) {
                     const product = gatherProductData();
                     if (productsJSON[product.productId]) {
-                        alert('A product with this ID already exists!');
+                        alert('A product with this ID already exists.');
                     } else {
                         productsJSON[product.productId] = product;
-                        alert('Product created successfully!');
+                        alert('Product created successfully.');
                         console.log('Products JSON:', JSON.stringify(productsJSON, null, 2));
                     }
                 }
@@ -140,7 +140,7 @@
                 if (validateForm()) {
                     const product = gatherProductData();
                     if (!productsJSON[product.productId]) {
-                        alert('Product not found!');
+                        alert('Product not found.');
                     } else {
                         productsJSON[product.productId] = product;
                         alert('Product updated successfully!');
@@ -160,23 +160,23 @@
                 const productPrice = $('#productPrice').val().trim();
 
                 if (!productId) {
-                    $('#productIdError').text('Product ID is required.');
+                    $('#productIdError').text('Product ID required.');
                     isValid = false;
                 }
                 if (!productDescription) {
-                    $('#productDescriptionError').text('Product description is required.');
+                    $('#productDescriptionError').text('Product description required.');
                     isValid = false;
                 }
                 if (!productCategory) {
-                    $('#productCategoryError').text('Product category is required.');
+                    $('#productCategoryError').text('Product category required.');
                     isValid = false;
                 }
                 if (!productUOM) {
-                    $('#productUOMError').text('Unit of measure is required.');
+                    $('#productUOMError').text('Unit of measure required.');
                     isValid = false;
                 }
                 if (!productPrice) {
-                    $('#productPriceError').text('Product price is required.');
+                    $('#productPriceError').text('Product price required.');
                     isValid = false;
                 }
 
