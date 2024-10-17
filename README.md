@@ -29,17 +29,11 @@ The goal of this project is to design and develop a fully functional web storefr
 
 ## Roles and Responsibilities
 
-- **Felix Naroditskiy** – Project Manager  
+- **Felix Naroditskiy** – Project Manager /UI 
   Responsible for overseeing project progress, managing communication between team members, and ensuring deadlines are met.
   
-- **Abraham Balikcioglu** – Back-End Developer  
-  Responsible for setting up the server infrastructure, managing the database, and integrating the payment gateway.
-  
-- **Mary Briceno** – Front-End Designer  
-  Designs the user interface (UI) and ensures the user experience (UX) meets the project requirements.
-  
-- **Theodor Necula** – Quality Assurance and Tester  
-  Conducts testing of the web application, ensuring quality and usability by identifying and reporting issues.
+- **Abraham Balikcioglu** – Developer/Designer  
+  Responsible for setting up the infrastructure, validation testing, product/shopper storage, and quality assurance.
 
 ## Technologies
 
