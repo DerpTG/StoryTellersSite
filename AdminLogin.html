@@ -84,14 +84,12 @@
             $('#adminLoginForm').submit(function(e) {
                 e.preventDefault();
 
-                // Limit length for buffer overflow prevention
                 const username = $('#adminUsername').val().trim();
                 const password = $('#adminPassword').val().trim();
 
                 const correctUsername = 'admin';
                 const correctPassword = 'everystorycounts';
 
-                // Check for buffer overflow attempts by limiting length
                 if (username.length > 30 || password.length > 30) {
                     if (username.length > 30) {
                         $('#usernameError').show();
@@ -106,7 +104,6 @@
                     return;
                 }
 
-                // Check login attempts to avoid brute force
                 if (loginAttempts >= maxAttempts) {
                     alert('Maximum login attempts exceeded. Please try again later.');
                     return;
