@@ -26,6 +26,10 @@
             color: red;
             font-weight: bold;
         }
+
+        .quantity-select {
+            width: 60px;
+        }
     </style>
 </head>
 <body>
@@ -102,6 +106,7 @@
         let products = {};
 
         function renderCart() {
+
             let cartItemsHtml = '';
             let subtotal = 0;
 
@@ -114,11 +119,17 @@
                     const itemTotal = item.productPrice * item.quantity;
                     subtotal += itemTotal;
 
+                    let quantityDropdown = `<select class="form-control quantity-select" onchange="updateQuantity('${productId}', this.value)">`;
+                    for (let i = 1; i <= 10; i++) {
+                        quantityDropdown += `<option value="${i}" ${i == item.quantity ? 'selected' : ''}>${i}</option>`;
+                    }
+                    quantityDropdown += `</select>`;
+
                     cartItemsHtml += `
                         <tr>
                             <td>${item.productDescription}</td>
                             <td>$${item.productPrice.toFixed(2)}</td>
-                            <td>${item.quantity}</td>
+                            <td>${quantityDropdown}</td>
                             <td>$${itemTotal.toFixed(2)}</td>
                             <td><button class="btn btn-danger" onclick="removeFromCart('${productId}')">Remove</button></td>
                         </tr>
@@ -130,6 +141,11 @@
             $('#cartItems').html(cartItemsHtml);
             $('#subtotal').text(`$${subtotal.toFixed(2)}`);
             $('#estimatedTotal').text(`$${subtotal.toFixed(2)}`);
+        }
+
+        function updateQuantity(productId, quantity) {
+            cart[productId].quantity = parseInt(quantity);
+            renderCart();
         }
 
         function addToCart(productId) {
