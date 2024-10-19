@@ -100,23 +100,53 @@
     <script>
         let cart = {};
         let products = {};
-		
-		function addToCart(productId) {
-    		const product = products[productId];
-    		if (cart[productId]) {
-        		cart[productId].quantity += 1;
-    		} else {
-        		cart[productId] = { ...product, quantity: 1 };
-    		}
-    		renderCart();
-		}
 
-		function removeFromCart(productId) {
-			delete cart[productId];
-			renderCart();
-		}
+        function renderCart() {
+            let cartItemsHtml = '';
+            let subtotal = 0;
 
-		
+            if (Object.keys(cart).length === 0) {
+                cartItemsHtml = '<tr><td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td></tr>';
+                $('#checkoutButton').prop('disabled', true);
+            } else {
+                for (let productId in cart) {
+                    const item = cart[productId];
+                    const itemTotal = item.productPrice * item.quantity;
+                    subtotal += itemTotal;
+
+                    cartItemsHtml += `
+                        <tr>
+                            <td>${item.productDescription}</td>
+                            <td>$${item.productPrice.toFixed(2)}</td>
+                            <td>${item.quantity}</td>
+                            <td>$${itemTotal.toFixed(2)}</td>
+                            <td><button class="btn btn-danger" onclick="removeFromCart('${productId}')">Remove</button></td>
+                        </tr>
+                    `;
+                }
+                $('#checkoutButton').prop('disabled', false);
+            }
+
+            $('#cartItems').html(cartItemsHtml);
+            $('#subtotal').text(`$${subtotal.toFixed(2)}`);
+            $('#estimatedTotal').text(`$${subtotal.toFixed(2)}`);
+        }
+
+        function addToCart(productId) {
+            const product = products[productId];
+            if (cart[productId]) {
+                cart[productId].quantity += 1;
+            } else {
+                cart[productId] = { ...product, quantity: 1 };
+            }
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            delete cart[productId];
+            renderCart();
+        }
+
         $(document).ready(function() {
             $.ajax({
                 url: 'products.json',
@@ -129,37 +159,6 @@
                     console.error("Error loading JSON:", error);
                 }
             });
-
-            function renderCart() {
-                let cartItemsHtml = '';
-                let subtotal = 0;
-
-                if (Object.keys(cart).length === 0) {
-                    cartItemsHtml = '<tr><td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td></tr>';
-                    $('#checkoutButton').prop('disabled', true);
-                } else {
-                    for (let productId in cart) {
-                        const item = cart[productId];
-                        const itemTotal = item.productPrice * item.quantity;
-                        subtotal += itemTotal;
-
-                        cartItemsHtml += `
-                            <tr>
-                                <td>${item.productDescription}</td>
-                                <td>$${item.productPrice.toFixed(2)}</td>
-                                <td>${item.quantity}</td>
-                                <td>$${itemTotal.toFixed(2)}</td>
-                                <td><button class="btn btn-danger" onclick="removeFromCart('${productId}')">Remove</button></td>
-                            </tr>
-                        `;
-                    }
-                    $('#checkoutButton').prop('disabled', false);
-                }
-
-                $('#cartItems').html(cartItemsHtml);
-                $('#subtotal').text(`$${subtotal.toFixed(2)}`);
-                $('#estimatedTotal').text(`$${subtotal.toFixed(2)}`);
-            }
 
             $('#searchButton').click(function() {
                 const searchTerm = $('#searchBar').val().toLowerCase();
@@ -184,6 +183,5 @@
             });
         });
     </script>
-
 </body>
 </html>
