@@ -100,7 +100,23 @@
     <script>
         let cart = {};
         let products = {};
+		
+		function addToCart(productId) {
+    		const product = products[productId];
+    		if (cart[productId]) {
+        		cart[productId].quantity += 1;
+    		} else {
+        		cart[productId] = { ...product, quantity: 1 };
+    		}
+    		renderCart();
+		}
 
+		function removeFromCart(productId) {
+			delete cart[productId];
+			renderCart();
+		}
+
+		
         $(document).ready(function() {
             $.ajax({
                 url: 'products.json',
@@ -113,21 +129,6 @@
                     console.error("Error loading JSON:", error);
                 }
             });
-
-            function addToCart(productId) {
-                const product = products[productId];
-                if (cart[productId]) {
-                    cart[productId].quantity += 1;
-                } else {
-                    cart[productId] = { ...product, quantity: 1 };
-                }
-                renderCart();
-            }
-
-            function removeFromCart(productId) {
-                delete cart[productId];
-                renderCart();
-            }
 
             function renderCart() {
                 let cartItemsHtml = '';
