@@ -107,7 +107,76 @@
         let products = {};
 		
 		// PUT CODE HERE FOR functions renderCart(), updateQuantity(), addToCart(), and removeFromCart() functions. THe jquery AJAX is already in.
+function renderCart() {
+    const cartItemsContain = $('#cartItems');
+    cartItemsContain.empty();
 
+    if (Object.keys(cart).length === 0) {
+        cartItemsContain.append('<tr><td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td></tr>');
+        $('#checkoutButton').prop('disabled', true);
+        updateOrderSummary();
+        return;
+    }
+
+    $.each(cart, function(productId, quantity) {
+        const product = products[productId];
+        const total = (product.productPrice * quantity).toFixed(2);
+
+        cartItemsContain.append(`
+            <tr>
+                <td>${product.productDescription}</td>
+                <td>$${product.productPrice.toFixed(2)}</td>
+                <td>
+                    <input type="number" class="form-control quantity-select" value="${quantity}" min="1" 
+                           onchange="updateQuantity('${productId}', this.value)">
+                </td>
+                <td>$${total}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${productId}')">Remove</button>
+                </td>
+            </tr>
+        `);
+    });
+
+    $('#checkoutButton').prop('disabled', false);
+    updateOrderSummary();
+}
+
+function updateQuantity(productId, newQuantity) {
+    if (newQuantity <= 0) {
+        removeFromCart(productId);
+    } else {
+        cart[productId] = parseInt(newQuantity, 10);
+    }
+    renderCart();
+}
+
+function addToCart(productId) {
+    if (cart[productId]) {
+        cart[productId] += 1;
+    } else {
+        cart[productId] = 1;
+    }
+    renderCart();
+}
+
+function removeFromCart(productId) {
+    delete cart[productId];
+    renderCart();
+}
+
+function updateOrderSummary() {
+    let subtotal = 0;
+
+    $.each(cart, function(productId, quantity) {
+        const product = products[productId];
+        subtotal += product.productPrice * quantity;
+    });
+
+    $('#subtotal').text(`$${subtotal.toFixed(2)}`);
+    $('#estimatedTotal').text(`$${subtotal.toFixed(2)}`);
+}
+//finish
         
 
         $(document).ready(function() {
