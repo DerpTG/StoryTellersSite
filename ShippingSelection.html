@@ -173,64 +173,8 @@
                 $('#shippingCost').text(`$${shippingCost.toFixed(2)}`);
             });
 
-            $('#submitShipping').click(function() {
-                if (validateForm()) {
-                    gatherShippingData();
-                    alert('Shipping details saved successfully!');
-                    console.log('Shipping JSON:', JSON.stringify(shippingDetailsJSON, null, 2));
-                }
-            });
-
-            function validateForm() {
-				let isValid = true;
-				$('.error').text('');
-
-				let address = $('#address').val().trim();
-				let city = $('#city').val().trim();
-				let state = $('#state').val().trim();
-				let zip = $('#zip').val().trim();
-				let carrier = $('#carrier').val();
-				let method = $('#method').val();
-
-				if (!address) {
-					$('#addressError').text('Address required.');
-					isValid = false;
-				}
-				if (!city) {
-					$('#cityError').text('City required.');
-					isValid = false;
-				}
-				if (!state) {
-					$('#stateError').text('State required.');
-					isValid = false;
-				}
-				if (!zip) {
-					$('#zipError').text('Zip code required.');
-					isValid = false;
-				}
-				if (!carrier) {
-					$('#carrierError').text('Carrier required.');
-					isValid = false;
-				}
-				if (!method) {
-					$('#methodError').text('Shipping method required.');
-					isValid = false;
-				}
-
-				return isValid;
-			}
-
-            function gatherShippingData() {
-                shippingDetailsJSON = {
-                    address: $('#address').val().trim(),
-                    city: $('#city').val().trim(),
-                    state: $('#state').val().trim(),
-                    zip: $('#zip').val().trim(),
-                    carrier: $('#carrier').val(),
-                    method: $('#method').val(),
-                    cost: $('#shippingCost').text()
-                };
-            }
+			//Put JQUERY Code here for submitshipping JSON creation, validate form function, and gather shipping data function
+            
         });
     </script>
 
