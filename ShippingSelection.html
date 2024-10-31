@@ -74,7 +74,7 @@
                     <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                 </ul>
-                <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
+                <button class="btn btn-outline-dark">
                     <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
                 </button>
             </div>
@@ -173,59 +173,64 @@
                 $('#shippingCost').text(`$${shippingCost.toFixed(2)}`);
             });
 
-			//Put JQUERY Code here for submitshipping JSON creation, validate form function, and gather shipping data function
-$('#submitShipping').click(function() {
-    if (validateForm()) {
-        shippingDetailsJSON = gatherShippingData();
-        console.log(shippingDetailsJSON);
-    }
-});
+            $('#submitShipping').click(function() {
+                if (validateForm()) {
+                    gatherShippingData();
+                    alert('Shipping details saved successfully!');
+                    console.log('Shipping JSON:', JSON.stringify(shippingDetailsJSON, null, 2));
+                }
+            });
 
-function validateForm() {
-    let isValid = true;
-    $('.error').text('');
+            function validateForm() {
+				let isValid = true;
+				$('.error').text('');
 
-    if ($('#address').val() === '') {
-        $('#addressError').text('Address required');
-        isValid = false;
-    }
-    if ($('#city').val() === '') {
-        $('#cityError').text('City required');
-        isValid = false;
-    }
-    if ($('#state').val() === '') {
-        $('#stateError').text('State required');
-        isValid = false;
-    }
-    if ($('#zip').val() === '') {
-        $('#zipError').text('Zipcode required');
-        isValid = false;
-    }
-    if ($('#carrier').val() === '') {
-        $('#carrierError').text('Slect carrier');
-        isValid = false;
-    }
-    if ($('#method').val() === '') {
-        $('#methodError').text('Select shipping method');
-        isValid = false;
-    }
+				let address = $('#address').val().trim();
+				let city = $('#city').val().trim();
+				let state = $('#state').val().trim();
+				let zip = $('#zip').val().trim();
+				let carrier = $('#carrier').val();
+				let method = $('#method').val();
 
-    return isValid;
-}
+				if (!address) {
+					$('#addressError').text('Address required.');
+					isValid = false;
+				}
+				if (!city) {
+					$('#cityError').text('City required.');
+					isValid = false;
+				}
+				if (!state) {
+					$('#stateError').text('State required.');
+					isValid = false;
+				}
+				if (!zip) {
+					$('#zipError').text('Zip code required.');
+					isValid = false;
+				}
+				if (!carrier) {
+					$('#carrierError').text('Carrier required.');
+					isValid = false;
+				}
+				if (!method) {
+					$('#methodError').text('Shipping method required.');
+					isValid = false;
+				}
 
-function gatherShippingData() {
-    return {
-        address: $('#address').val(),
-        city: $('#city').val(),
-        state: $('#state').val(),
-        zip: $('#zip').val(),
-        carrier: $('#carrier').val(),
-        method: $('#method').val(),
-        shippingCost: $('#shippingCost').text()
-    };
-}
-//end
-		
+				return isValid;
+			}
+
+            function gatherShippingData() {
+                shippingDetailsJSON = {
+                    address: $('#address').val().trim(),
+                    city: $('#city').val().trim(),
+                    state: $('#state').val().trim(),
+                    zip: $('#zip').val().trim(),
+                    carrier: $('#carrier').val(),
+                    method: $('#method').val(),
+                    cost: $('#shippingCost').text()
+                };
+            }
         });
     </script>
 
