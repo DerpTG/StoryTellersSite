@@ -174,7 +174,58 @@
             });
 
 			//Put JQUERY Code here for submitshipping JSON creation, validate form function, and gather shipping data function
-            
+$('#submitShipping').click(function() {
+    if (validateForm()) {
+        shippingDetailsJSON = gatherShippingData();
+        console.log(shippingDetailsJSON);
+    }
+});
+
+function validateForm() {
+    let isValid = true;
+    $('.error').text('');
+
+    if ($('#address').val() === '') {
+        $('#addressError').text('Address required');
+        isValid = false;
+    }
+    if ($('#city').val() === '') {
+        $('#cityError').text('City required');
+        isValid = false;
+    }
+    if ($('#state').val() === '') {
+        $('#stateError').text('State required');
+        isValid = false;
+    }
+    if ($('#zip').val() === '') {
+        $('#zipError').text('Zipcode required');
+        isValid = false;
+    }
+    if ($('#carrier').val() === '') {
+        $('#carrierError').text('Slect carrier');
+        isValid = false;
+    }
+    if ($('#method').val() === '') {
+        $('#methodError').text('Select shipping method');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function gatherShippingData() {
+    return {
+        address: $('#address').val(),
+        city: $('#city').val(),
+        state: $('#state').val(),
+        zip: $('#zip').val(),
+        carrier: $('#carrier').val(),
+        method: $('#method').val(),
+        shippingCost: $('#shippingCost').text()
+    };
+}
+//end
+		
         });
     </script>
 
