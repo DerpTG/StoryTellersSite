@@ -137,48 +137,15 @@ app.delete('/api/products/:productId', (req, res) => {
 
 /* -------------------- Shopping Cart Routes -------------------- */
 
-app.get('/api/shopping-cart', (req, res) => {
+app.get('/api/shoppingcartitems', (req, res) => {
     const cart = readJsonFile(cartFilePath);
     res.json(cart);
 });
 
-app.post('/api/shopping-cart', (req, res) => {
-    const cart = readJsonFile(cartFilePath);
-    const { productId, quantity, product } = req.body;
-
-    if (cart[productId]) {
-        cart[productId].quantity += quantity;
-    } else {
-        cart[productId] = { product, quantity };
-    }
-
-    writeJsonFile(cartFilePath, cart);
-    res.status(201).json(cart);
-});
-
-app.put('/api/shopping-cart/:productId', (req, res) => {
-    const cart = readJsonFile(cartFilePath);
-    const { quantity } = req.body;
-
-    if (!cart[req.params.productId]) {
-        return res.status(404).json({ message: 'Product not found in cart' });
-    }
-
-    cart[req.params.productId].quantity = quantity;
-    writeJsonFile(cartFilePath, cart);
-    res.json(cart);
-});
-
-app.delete('/api/shopping-cart/:productId', (req, res) => {
-    const cart = readJsonFile(cartFilePath);
-
-    if (!cart[req.params.productId]) {
-        return res.status(404).json({ message: 'Product not found in cart' });
-    }
-
-    delete cart[req.params.productId];
-    writeJsonFile(cartFilePath, cart);
-    res.status(204).end();
+app.post('/api/shoppingcartitems/checkout', (req, res) => {
+    const cartData = req.body;
+    writeJsonFile(cartFilePath, cartData);
+    res.status(200).json({ message: 'Cart data saved successfully!' });
 });
 
 // Start server

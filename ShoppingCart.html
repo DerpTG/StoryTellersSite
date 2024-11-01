@@ -7,144 +7,132 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="StoryStyles.css">
     <style>
-        .cart-section { padding: 30px 0; }
-        .cart-empty { text-align: center; padding: 20px; }
-        .order-summary { background-color: #f8f9fa; padding: 20px; border-radius: 5px; }
-        .estimated-shipping { color: red; font-weight: bold; }
-        .quantity-select { width: 60px; }
+        .cart-section {
+            padding: 30px 0;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .estimated-shipping {
+            color: red;
+            font-weight: bold;
+        }
+
+        .quantity-select {
+            width: 60px;
+        }
     </style>
 </head>
-<body>
+<body ng-controller="CartController">
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="HomePage.html">Storytellers</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
-            </ul>
-            <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
-            <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
-                <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="HomePage.html">Storytellers</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+                <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
+                <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
+                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="cart-section container">
+        <h2>Your Shopping Cart</h2>
+
+        <div class="cart-table">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Items</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cartItems">
+                    <tr>
+                        <td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </nav>
-</header>
 
-<section class="cart-section container" ng-controller="CartController">
-    <h2>Your Shopping Cart</h2>
+        <div class="order-summary">
+            <h5>Order Summary</h5>
+            <p><strong>Subtotal:</strong> <span id="subtotal">$0.00</span></p>
+            <p><strong>Shipping:</strong> Determined in Checkout</p>
+            <p><strong>Estimated Total:</strong> <span id="estimatedTotal">$0.00</span></p>
+            <button class="btn btn-danger btn-block" id="checkoutButton" ng-click="sendCartToBackend()">Proceed to Checkout</button>
+        </div>
 
-    <div class="cart-table">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Items</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="cartItems">
-                <tr>
-                    <td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="search-section mt-5">
+            <h3>Find Books</h3>
+            <input type="text" class="form-control" id="searchBar" placeholder="Search for books...">
+            <button class="btn btn-outline-dark mt-2" id="searchButton">Search</button>
+            <div id="searchResults" class="mt-4"></div>
+        </div>
+    </section>
 
-    <div class="order-summary">
-        <h5>Order Summary</h5>
-        <p><strong>Subtotal:</strong> <span id="subtotal">$0.00</span></p>
-        <p><strong>Shipping:</strong> Determined in Checkout</p>
-        <p><strong>Estimated Total:</strong> <span id="estimatedTotal">$0.00</span></p>
-        <button class="btn btn-danger btn-block" id="checkoutButton" disabled>Proceed to Checkout</button>
-    </div>
+    <footer class="text-center bg-dark text-white py-4">
+        <p>&copy; 2024 Storytellers. All rights reserved.</p>
+        <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+    </footer>
 
-    <!-- Search Section -->
-    <div class="search-section mt-5">
-        <h3>Find Books</h3>
-        <input type="text" class="form-control" id="searchBar" placeholder="Search for books...">
-        <button class="btn btn-outline-dark mt-2" id="searchButton">Search</button>
-        <div id="searchResults" class="mt-4"></div>
-    </div>
-</section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 
-<footer class="text-center bg-dark text-white py-4">
-    <p>&copy; 2024 Storytellers. All rights reserved.</p>
-    <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
-</footer>
+    <script>
+        let cart = {};
+        let products = {};
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
-
-<script>
-    var app = angular.module('cartApp', []);
-
-    app.controller('CartController', ['$scope', '$http', function($scope, $http) {
-        $scope.cart = {};
-
-        // Load cart from server
-        $scope.loadCart = function() {
-            $http.get('/api/shopping-cart')
-                .then(function(response) {
-                    $scope.cart = response.data;
-                    renderCart();
-                }, function(error) {
-                    console.error('Error loading cart:', error);
-                });
-        };
-
-        // Add to cart
-        $scope.addToCart = function(productId) {
-            $http.post('/api/shopping-cart', { productId: productId, quantity: 1 })
-                .then(function(response) {
-                    $scope.cart = response.data;
-                    renderCart();
-                }, function(error) {
-                    console.error('Error adding to cart:', error);
-                });
-        };
-
-        $scope.loadCart();  // Initialize cart on load
-    }]);
-
-    $(document).ready(function() {
         function renderCart() {
-            const cartItemsContainer = $('#cartItems');
-            cartItemsContainer.empty();
+            const cartItemsContain = $('#cartItems');
+            cartItemsContain.empty();
 
-            if (Object.keys(angular.element(document.body).scope().cart).length === 0) {
-                cartItemsContainer.append('<tr><td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td></tr>');
+            if (Object.keys(cart).length === 0) {
+                cartItemsContain.append('<tr><td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td></tr>');
                 $('#checkoutButton').prop('disabled', true);
                 updateOrderSummary();
                 return;
             }
 
-            $.each(angular.element(document.body).scope().cart, function(productId, item) {
-                const product = item.product;
-                const quantity = item.quantity;
+            $.each(cart, function(productId, quantity) {
+                const product = products[productId];
                 const total = (product.productPrice * quantity).toFixed(2);
 
-                cartItemsContainer.append(`
+                cartItemsContain.append(`
                     <tr>
                         <td>${product.productDescription}</td>
                         <td>$${product.productPrice.toFixed(2)}</td>
                         <td>
                             <input type="number" class="form-control quantity-select" value="${quantity}" min="1" 
-                                   onchange="angular.element(document.body).scope().updateQuantity('${productId}', this.value)">
+                                   onchange="updateQuantity('${productId}', this.value)">
                         </td>
                         <td>$${total}</td>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="angular.element(document.body).scope().removeFromCart('${productId}')">Remove</button>
+                            <button class="btn btn-danger btn-sm" onclick="removeFromCart('${productId}')">Remove</button>
                         </td>
                     </tr>
                 `);
@@ -154,54 +142,102 @@
             updateOrderSummary();
         }
 
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                cart[productId] = parseInt(newQuantity, 10);
+            }
+            renderCart();
+        }
+
+        function addToCart(productId) {
+            if (cart[productId]) {
+                cart[productId] += 1;
+            } else {
+                cart[productId] = 1;
+            }
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            delete cart[productId];
+            renderCart();
+        }
+
         function updateOrderSummary() {
             let subtotal = 0;
-            $.each(angular.element(document.body).scope().cart, function(productId, item) {
-                const product = item.product;
-                subtotal += product.productPrice * item.quantity;
+
+            $.each(cart, function(productId, quantity) {
+                const product = products[productId];
+                subtotal += product.productPrice * quantity;
             });
 
             $('#subtotal').text(`$${subtotal.toFixed(2)}`);
             $('#estimatedTotal').text(`$${subtotal.toFixed(2)}`);
         }
 
-        // Load products and setup search
-        let products = {};
+        $(document).ready(function() {
+            $('#searchButton').click(function() {
+                const searchTerm = $('#searchBar').val().toLowerCase();
+                let searchResultsHtml = '';
 
-        $.ajax({
-            url: '/api/products',
-            method: 'GET',
-            success: function(data) {
-                products = data;
-            },
-            error: function(xhr, status, error) {
-                console.error("Error loading products:", error);
-            }
-        });
+                $.each(products, function(productId, product) {
+                    if (product.productDescription.toLowerCase().includes(searchTerm)) {
+                        searchResultsHtml += `
+                            <div class="search-result">
+                                <p><strong>${product.productDescription}</strong> - $${product.productPrice}</p>
+                                <button class="btn btn-outline-dark" onclick="addToCart('${productId}')">Add to Cart</button>
+                            </div>
+                        `;
+                    }
+                });
 
-        $('#searchButton').click(function() {
-            const searchTerm = $('#searchBar').val().toLowerCase();
-            let searchResultsHtml = '';
-
-            $.each(products, function(productId, product) {
-                if (product.productDescription.toLowerCase().includes(searchTerm)) {
-                    searchResultsHtml += `
-                        <div class="search-result">
-                            <p><strong>${product.productDescription}</strong> - $${product.productPrice}</p>
-                            <button class="btn btn-outline-dark" onclick="angular.element(document.body).scope().addToCart('${productId}')">Add to Cart</button>
-                        </div>
-                    `;
+                if (searchResultsHtml === '') {
+                    searchResultsHtml = '<p>No products found!</p>';
                 }
+
+                $('#searchResults').html(searchResultsHtml);
             });
-
-            $('#searchResults').html(searchResultsHtml || '<p>No products found!</p>');
         });
+    </script>
 
-        $('#checkoutButton').click(function() {
-            window.location.href = 'ShippingSelection.html';
-        });
-    });
+    <script>
+    var app = angular.module('cartApp', []);
+
+	app.controller('CartController', ['$scope', '$http', function($scope, $http) {
+		$http.get('api/products.json').then(response => {
+			products = response.data;
+			console.log("Products JSON loaded", products);
+			return $http.get('http://localhost:3000/api/shoppingcartitems');
+		}).then(response => {
+			const existingCart = response.data;
+
+			$.each(existingCart, function(productId, quantity) {
+				if (products[productId]) {
+					cart[productId] = quantity;
+				}
+			});
+
+			renderCart();
+		}).catch(error => {
+			console.error("Error loading cart or products data:", error);
+		});
+
+		$scope.sendCartToBackend = function() {
+			$http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
+				.then(response => {
+					console.log("Cart data saved successfully");
+					window.location.href = 'ShippingSelection.html';
+				})
+				.catch(error => {
+					console.error("Error saving cart data:", error);
+				});
+		};
+	}]);
+
 </script>
+
 
 </body>
 </html>
