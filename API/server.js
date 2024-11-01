@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-const shoppersFilePath = path.join(__dirname, 'shoppers.json');
+const shoppersFilePath = path.join(__dirname, 'Shoppers.json');
 
 function readShoppersFile() {
     const data = fs.readFileSync(shoppersFilePath);
