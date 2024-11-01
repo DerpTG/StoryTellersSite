@@ -90,7 +90,7 @@
 
             $scope.createShopper = function() {
                 if (validateForm()) {
-                    $http.post('http://localhost:3000/shoppers', $scope.shopper)
+                    $http.post('http://localhost:3000/api/shoppers', $scope.shopper)
                         .then(function(response) {
                             alert('Shopper created successfully!');
                             console.log(response.data);
@@ -102,7 +102,7 @@
 
             $scope.updateShopper = function() {
                 if (validateForm()) {
-                    $http.put(`http://localhost:3000/shoppers/${$scope.shopper.username}`, $scope.shopper)
+                    $http.put(`http://localhost:3000/api/shoppers/${$scope.shopper.username}`, $scope.shopper)
                         .then(function(response) {
                             alert('Shopper updated successfully!');
                             console.log(response.data);
