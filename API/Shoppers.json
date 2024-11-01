@@ -19,5 +19,12 @@
     "phone": "2672649244",
     "age": 13,
     "address": "303 Birch Valley Court"
+  },
+  "user4": {
+    "username": "user4",
+    "email": "1@gmail.com",
+    "phone": "245-675-6789",
+    "age": 2,
+    "address": "23445"
   }
 }
