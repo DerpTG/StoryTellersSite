@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="shopperApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,32 +36,32 @@
         </nav>
     </header>
 
-    <section class="shopper-management-section">
+    <section class="shopper-management-section" ng-controller="ShopperController">
         <div class="form-container">
             <h2>Shopper Management</h2>
             <form id="shopperForm">
                 <div class="form-group">
                     <label for="username">Username (required)</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+                    <input type="text" class="form-control" id="username" ng-model="shopper.username" placeholder="Enter username" required>
                     <div class="error" id="usernameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email Address (required)</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                    <input type="email" class="form-control" id="email" ng-model="shopper.email" placeholder="Enter email" required>
                     <div class="error" id="emailError"></div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number (optional)</label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
+                    <input type="tel" class="form-control" id="phone" ng-model="shopper.phone" placeholder="Enter phone number">
                 </div>
                 <div class="form-group">
                     <label for="age">Age (required)</label>
-                    <input type="number" class="form-control" id="age" placeholder="Enter age" required>
+                    <input type="number" class="form-control" id="age" ng-model="shopper.age" placeholder="Enter age" required>
                     <div class="error" id="ageError"></div>
                 </div>
                 <div class="form-group">
                     <label for="address">Address (required)</label>
-                    <textarea class="form-control" id="address" placeholder="Enter address" required></textarea>
+                    <textarea class="form-control" id="address" ng-model="shopper.address" placeholder="Enter address" required></textarea>
                     <div class="error" id="addressError"></div>
                 </div>
                 <div class="btn-container">
@@ -83,34 +83,34 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 
     <script>
-        let shoppersJSON = {};
+        var app = angular.module('shopperApp', []);
 
-        $(document).ready(function() {
-            $('#createShopperBtn').click(function() {
-                if (validateForm()) {
-                    const shopper = gatherShopperData();
-                    if (shoppersJSON[shopper.username]) {
-                        alert('A shopper with this username already exists!');
-                    } else {
-                        shoppersJSON[shopper.username] = shopper;
-                        alert('Shopper created successfully!');
-                        console.log('Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
-                    }
-                }
-            });
+        app.controller('ShopperController', ['$scope', '$http', function($scope, $http) {
+            $scope.shopper = {};
 
-            $('#updateShopperBtn').click(function() {
+            $scope.createShopper = function() {
                 if (validateForm()) {
-                    const shopper = gatherShopperData();
-                    if (!shoppersJSON[shopper.username]) {
-                        alert('Shopper not found!');
-                    } else {
-                        shoppersJSON[shopper.username] = shopper;
-                        alert('Shopper updated successfully!');
-                        console.log('Updated Shoppers JSON:', JSON.stringify(shoppersJSON, null, 2));
-                    }
+                    $http.post('http://localhost:3000/shoppers', $scope.shopper)
+                        .then(function(response) {
+                            alert('Shopper created successfully!');
+                            console.log(response.data);
+                        }, function(error) {
+                            console.error('Error creating shopper:', error);
+                        });
                 }
-            });
+            };
+
+            $scope.updateShopper = function() {
+                if (validateForm()) {
+                    $http.put(`http://localhost:3000/shoppers/${$scope.shopper.username}`, $scope.shopper)
+                        .then(function(response) {
+                            alert('Shopper updated successfully!');
+                            console.log(response.data);
+                        }, function(error) {
+                            console.error('Error updating shopper:', error);
+                        });
+                }
+            };
 
             function validateForm() {
                 let isValid = true;
@@ -147,24 +147,17 @@
 
                 return isValid;
             }
-
-            function gatherShopperData() {
-                return {
-                    username: $('#username').val().trim(),
-                    email: $('#email').val().trim(),
-                    phone: $('#phone').val().trim(),
-                    age: $('#age').val().trim(),
-                    address: $('#address').val().trim()
-                };
-            }
-        });
-    </script>
-	
-	<script>
-        var app = angular.module('shopperApp', []);
-        app.controller('ShopperController', ['$scope', function($scope) {
-            // Future node.js code
         }]);
+        
+        $(document).ready(function() {
+            $('#createShopperBtn').click(function() {
+                angular.element(this).scope().createShopper();
+            });
+
+            $('#updateShopperBtn').click(function() {
+                angular.element(this).scope().updateShopper();
+            });
+        });
     </script>
 </body>
 </html>
