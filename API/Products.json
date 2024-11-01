@@ -21,7 +21,7 @@
     "productCategory": "Teens and Young Adult",
     "productUOM": "BK",
     "productPrice": 7.99,
-    "productWeight": 1.0
+    "productWeight": 1
   },
   "P004": {
     "productId": "P004",
@@ -61,7 +61,7 @@
     "productCategory": "Fiction",
     "productUOM": "BK",
     "productPrice": 6.99,
-    "productWeight": 1.0
+    "productWeight": 1
   },
   "P009": {
     "productId": "P009",
@@ -70,5 +70,6 @@
     "productUOM": "BK",
     "productPrice": 5.99,
     "productWeight": 1.2
-  }
+  },
+  "undefined": {}
 }
