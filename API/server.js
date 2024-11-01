@@ -137,13 +137,11 @@ app.delete('/api/products/:productId', (req, res) => {
 
 /* -------------------- Shopping Cart Routes -------------------- */
 
-// Retrieve all items in the shopping cart
 app.get('/api/shopping-cart', (req, res) => {
     const cart = readJsonFile(cartFilePath);
     res.json(cart);
 });
 
-// Add or update an item in the shopping cart
 app.post('/api/shopping-cart', (req, res) => {
     const cart = readJsonFile(cartFilePath);
     const { productId, quantity, product } = req.body;
@@ -158,7 +156,6 @@ app.post('/api/shopping-cart', (req, res) => {
     res.status(201).json(cart);
 });
 
-// Update the quantity of an item in the shopping cart
 app.put('/api/shopping-cart/:productId', (req, res) => {
     const cart = readJsonFile(cartFilePath);
     const { quantity } = req.body;
@@ -172,7 +169,6 @@ app.put('/api/shopping-cart/:productId', (req, res) => {
     res.json(cart);
 });
 
-// Remove an item from the shopping cart
 app.delete('/api/shopping-cart/:productId', (req, res) => {
     const cart = readJsonFile(cartFilePath);
 

@@ -6,43 +6,14 @@
     <title>Your Shopping Cart</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="StoryStyles.css">
-    <style>
-        .cart-section {
-            padding: 30px 0;
-        }
-        .cart-empty {
-            text-align: center;
-            padding: 20px;
-        }
-        .order-summary {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .quantity-select {
-            width: 60px;
-        }
-    </style>
 </head>
 <body ng-controller="CartController">
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="HomePage.html">Storytellers</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
+                <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
-                </ul>
-                <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
-                <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
-                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
-                </button>
-            </div>
         </nav>
     </header>
 
@@ -59,20 +30,21 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="cartItems">
+                <tbody>
                     <tr ng-repeat="(productId, item) in cart">
-                        <td>{{ item.product.productDescription }}</td>
-                        <td>${{ item.product.productPrice.toFixed(2) }}</td>
+                        <td>{{ item.productDescription }}</td>
+                        <td>${{ item.productPrice.toFixed(2) }}</td>
                         <td>
-                            <input type="number" class="form-control quantity-select" ng-model="item.quantity" min="1" ng-change="updateCartItem(productId, item.quantity)">
+                            <input type="number" class="form-control quantity-select" ng-model="item.quantity" min="1"
+                                ng-change="updateQuantity(productId, item.quantity)">
                         </td>
-                        <td>${{ (item.product.productPrice * item.quantity).toFixed(2) }}</td>
+                        <td>${{ (item.productPrice * item.quantity).toFixed(2) }}</td>
                         <td>
-                            <button class="btn btn-danger btn-sm" ng-click="removeCartItem(productId)">Remove</button>
+                            <button class="btn btn-danger btn-sm" ng-click="removeFromCart(productId)">Remove</button>
                         </td>
                     </tr>
                     <tr ng-if="!Object.keys(cart).length">
-                        <td colspan="5" class="cart-empty">Your Shopping Cart is Empty!</td>
+                        <td colspan="5" class="text-center">Your Shopping Cart is Empty!</td>
                     </tr>
                 </tbody>
             </table>
@@ -80,17 +52,20 @@
 
         <div class="order-summary">
             <h5>Order Summary</h5>
-            <p><strong>Subtotal:</strong> ${{ getSubtotal() }}</p>
-            <p><strong>Shipping:</strong> Determined in Checkout</p>
-            <p><strong>Estimated Total:</strong> ${{ getSubtotal() }}</p>
-            <button class="btn btn-danger btn-block" ng-disabled="!Object.keys(cart).length" ng-click="proceedToCheckout()">Proceed to Checkout</button>
+            <p><strong>Subtotal:</strong> ${{ calculateSubtotal().toFixed(2) }}</p>
+            <button class="btn btn-danger btn-block" ng-click="checkout()">Proceed to Checkout</button>
         </div>
 
         <div class="search-section mt-5">
             <h3>Find Books</h3>
-            <input type="text" class="form-control" id="searchBar" placeholder="Search for books...">
-            <button class="btn btn-outline-dark mt-2" id="searchButton">Search</button>
-            <div id="searchResults" class="mt-4"></div>
+            <input type="text" class="form-control" ng-model="searchTerm" placeholder="Search for books...">
+            <button class="btn btn-outline-dark mt-2" ng-click="search()">Search</button>
+            <div class="mt-4">
+                <div class="search-result" ng-repeat="product in searchResults">
+                    <p><strong>{{ product.productDescription }}</strong> - ${{ product.productPrice.toFixed(2) }}</p>
+                    <button class="btn btn-outline-dark" ng-click="addToCart(product.productId)">Add to Cart</button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -100,86 +75,83 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
     <script>
         var app = angular.module('cartApp', []);
+
         app.controller('CartController', ['$scope', '$http', function($scope, $http) {
             $scope.cart = {};
             $scope.products = {};
+            $scope.searchResults = [];
+            $scope.searchTerm = '';
 
-            // Load products and cart
-            $http.get('api/Products.json').then(function(response) {
+            // Load products
+            $http.get('/api/products').then(function(response) {
                 $scope.products = response.data;
-                $('#searchButton').click();
             });
 
-            $http.get('api/ShoppingCartItems.json').then(function(response) {
+            // Load cart
+            $http.get('/api/cart').then(function(response) {
                 $scope.cart = response.data;
             });
 
-            // Update cart item
-            $scope.updateCartItem = function(productId, quantity) {
-                if (quantity <= 0) {
-                    delete $scope.cart[productId];
-                } else {
-                    $scope.cart[productId].quantity = quantity;
-                }
-                $scope.saveCart();
-            };
-
+            // Add to cart
             $scope.addToCart = function(productId) {
+                const product = $scope.products[productId];
                 if ($scope.cart[productId]) {
                     $scope.cart[productId].quantity += 1;
                 } else {
-                    $scope.cart[productId] = { product: $scope.products[productId], quantity: 1 };
+                    $scope.cart[productId] = {
+                        productDescription: product.productDescription,
+                        productPrice: product.productPrice,
+                        quantity: 1
+                    };
                 }
-                $scope.saveCart();
-            };
 
-            $scope.removeCartItem = function(productId) {
-                delete $scope.cart[productId];
-                $scope.saveCart();
-            };
-
-            // Save cart to JSON file
-            $scope.saveCart = function() {
-                $http.post('/api/shopping-cart', $scope.cart);
-            };
-
-            // Order summary
-            $scope.getSubtotal = function() {
-                let subtotal = 0;
-                angular.forEach($scope.cart, function(item) {
-                    subtotal += item.product.productPrice * item.quantity;
+                $http.post('/api/cart', { productId: productId, quantity: 1 }).then(function(response) {
+                    $scope.cart = response.data;
                 });
-                return subtotal.toFixed(2);
             };
 
-            $scope.proceedToCheckout = function() {
+            // Update quantity
+            $scope.updateQuantity = function(productId, quantity) {
+                if (quantity <= 0) {
+                    $scope.removeFromCart(productId);
+                    return;
+                }
+
+                $scope.cart[productId].quantity = quantity;
+                $http.put(`/api/cart/${productId}`, { quantity: quantity }).then(function(response) {
+                    $scope.cart = response.data;
+                });
+            };
+
+            // Remove from cart
+            $scope.removeFromCart = function(productId) {
+                delete $scope.cart[productId];
+                $http.delete(`/api/cart/${productId}`).then(function() {
+                    $scope.cart = $scope.cart;
+                });
+            };
+
+            // Calculate subtotal
+            $scope.calculateSubtotal = function() {
+                return Object.values($scope.cart).reduce((sum, item) => sum + (item.productPrice * item.quantity), 0);
+            };
+
+            // Search functionality
+            $scope.search = function() {
+                const searchTerm = $scope.searchTerm.toLowerCase();
+                $scope.searchResults = Object.values($scope.products).filter(product =>
+                    product.productDescription.toLowerCase().includes(searchTerm)
+                );
+            };
+
+            // Checkout
+            $scope.checkout = function() {
                 window.location.href = 'ShippingSelection.html';
             };
         }]);
-
-        // jQuery for search functionality
-        $(document).ready(function() {
-            $('#searchButton').click(function() {
-                const searchTerm = $('#searchBar').val().toLowerCase();
-                let searchResultsHtml = '';
-
-                $.getJSON('api/Products.json', function(products) {
-                    $.each(products, function(productId, product) {
-                        if (product.productDescription.toLowerCase().includes(searchTerm)) {
-                            searchResultsHtml += `
-                                <div class="search-result">
-                                    <p><strong>${product.productDescription}</strong> - $${product.productPrice}</p>
-                                    <button class="btn btn-outline-dark" onclick="angular.element(this).scope().addToCart('${productId}')">Add to Cart</button>
-                                </div>
-                            `;
-                        }
-                    });
-                    $('#searchResults').html(searchResultsHtml || '<p>No products found!</p>');
-                });
-            });
-        });
     </script>
 </body>
 </html>
