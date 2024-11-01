@@ -10,6 +10,7 @@ app.use(express.json());
 
 const shoppersFilePath = path.join(__dirname, 'Shoppers.json');
 const productsFilePath = path.join(__dirname, 'Products.json');
+const cartFilePath = path.join(__dirname, 'ShoppingCartItems.json');
 
 function readJsonFile(filePath) {
     const data = fs.readFileSync(filePath);
@@ -131,6 +132,56 @@ app.delete('/api/products/:productId', (req, res) => {
 
     delete products[req.params.productId];
     writeJsonFile(productsFilePath, products);
+    res.status(204).end();
+});
+
+/* -------------------- Shopping Cart Routes -------------------- */
+
+// Retrieve all items in the shopping cart
+app.get('/api/shopping-cart', (req, res) => {
+    const cart = readJsonFile(cartFilePath);
+    res.json(cart);
+});
+
+// Add or update an item in the shopping cart
+app.post('/api/shopping-cart', (req, res) => {
+    const cart = readJsonFile(cartFilePath);
+    const { productId, quantity, product } = req.body;
+
+    if (cart[productId]) {
+        cart[productId].quantity += quantity;
+    } else {
+        cart[productId] = { product, quantity };
+    }
+
+    writeJsonFile(cartFilePath, cart);
+    res.status(201).json(cart);
+});
+
+// Update the quantity of an item in the shopping cart
+app.put('/api/shopping-cart/:productId', (req, res) => {
+    const cart = readJsonFile(cartFilePath);
+    const { quantity } = req.body;
+
+    if (!cart[req.params.productId]) {
+        return res.status(404).json({ message: 'Product not found in cart' });
+    }
+
+    cart[req.params.productId].quantity = quantity;
+    writeJsonFile(cartFilePath, cart);
+    res.json(cart);
+});
+
+// Remove an item from the shopping cart
+app.delete('/api/shopping-cart/:productId', (req, res) => {
+    const cart = readJsonFile(cartFilePath);
+
+    if (!cart[req.params.productId]) {
+        return res.status(404).json({ message: 'Product not found in cart' });
+    }
+
+    delete cart[req.params.productId];
+    writeJsonFile(cartFilePath, cart);
     res.status(204).end();
 });
 

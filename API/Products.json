@@ -102,5 +102,13 @@
     "productUOM": "EA",
     "productPrice": 1,
     "productWeight": 1
+  },
+  "P5": {
+    "productId": "P5",
+    "productDescription": "TEST",
+    "productCategory": "Fiction",
+    "productUOM": "SET",
+    "productPrice": 1,
+    "productWeight": 1
   }
 }

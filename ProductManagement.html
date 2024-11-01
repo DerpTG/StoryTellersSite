@@ -165,12 +165,10 @@
         $(document).ready(function() {
             $('#createProductBtn').click(function() {
                 angular.element(this).scope().createProduct();
-                angular.element(this).scope().$apply();
             });
 
             $('#updateProductBtn').click(function() {
                 angular.element(this).scope().updateProduct();
-                angular.element(this).scope().$apply();
             });
         });
     </script>
