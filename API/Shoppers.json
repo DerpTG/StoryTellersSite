@@ -1,0 +1,16 @@
+{
+    "user1": {
+        "username": "user1",
+        "email": "user1@example.com",
+        "phone": "123-456-7890",
+        "age": 25,
+        "address": "123 Main St, City, State"
+    },
+    "user2": {
+        "username": "user2",
+        "email": "user2@example.com",
+        "phone": "234-567-8901",
+        "age": 30,
+        "address": "456 Elm St, City, State"
+    }
+}
