@@ -71,5 +71,36 @@
     "productPrice": 5.99,
     "productWeight": 1.2
   },
-  "undefined": {}
+  "P1": {
+    "productId": "P1",
+    "productDescription": "test",
+    "productCategory": "Teens and Young Adult",
+    "productUOM": "BK",
+    "productPrice": 1,
+    "productWeight": 1
+  },
+  "P2": {
+    "productId": "P2",
+    "productDescription": "TEST",
+    "productCategory": "Fiction",
+    "productUOM": "EA",
+    "productPrice": 1,
+    "productWeight": 1
+  },
+  "P3": {
+    "productId": "P3",
+    "productDescription": "TEST",
+    "productCategory": "Fiction",
+    "productUOM": "EA",
+    "productPrice": 1,
+    "productWeight": 1
+  },
+  "P4": {
+    "productId": "P4",
+    "productDescription": "TEST",
+    "productCategory": "Fiction",
+    "productUOM": "EA",
+    "productPrice": 1,
+    "productWeight": 1
+  }
 }
