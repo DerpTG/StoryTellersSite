@@ -1,10 +1,161 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="StoryStyles.css">
+    <style>
+        .billing-section {
+            padding: 30px 0;
+        }
+        .form-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+        .form-header, .summary-header {
+            font-weight: bold;
+            padding: 10px;
+            background-color: #bdbdbd;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .order-summary {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .btn-place-order {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-place-order:hover {
+            background-color: #c9302c;
+        }
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container-half {
+            width: 48%;
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="HomePage.html">Storytellers</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+                <button class="btn btn-outline-dark">
+                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="billing-section container">
+        <div class="form-section">
+            <div class="form-container form-container-half">
+                <h3 class="form-header">Payment Method</h3>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label for="cardholderName">Cardholder Name</label>
+                        <input type="text" class="form-control" id="cardholderName" placeholder="Cardholder Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" placeholder="•••• •••• •••• ••••" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="expiryDate">Expiration Date (MM/YY)</label>
+                            <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="cvv">CVV</label>
+                            <input type="text" class="form-control" id="cvv" placeholder="•••" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Postal Code</label>
+                        <input type="text" class="form-control" id="postalCode" placeholder="Postal Code" required>
+                    </div>
+                    <p class="text-muted small">
+                        By paying with my card, I agree to the <a href="#">Privacy Statement</a>.
+                    </p>
+                </form>
+            </div>
+
+            <div class="order-summary form-container form-container-half">
+                <h3 class="summary-header">Order Totals</h3>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="redeemPoints">
+                    <label class="form-check-label" for="redeemPoints">I'd like to redeem points towards my order</label>
+                </div>
+                <div class="form-group mt-2">
+                    <select class="form-control" id="pointsToRedeem" disabled>
+                        <option>Select Points to Redeem</option>
+                    </select>
+                </div>
+                <hr>
+                <p><strong>Subtotal:</strong> <span id="subtotal">$9.49</span></p>
+                <p><strong>Shipping:</strong> <span id="shippingCost">$6.95</span></p>
+                <p><strong>Tax:</strong> <span id="tax">$0.99</span></p>
+                <hr>
+                <p><strong>Total:</strong> <span id="total">$17.43</span></p>
+                <p><strong>Amount Owing:</strong> <span id="amountOwing">USD $17.43</span></p>
+                <button class="btn-place-order" id="placeOrderButton">Place Order</button>
+            </div>
+        </div>
+    </section>
+
+	<footer class="text-center bg-dark text-white py-4">
+		<p>&copy; 2024 Storytellers. All rights reserved.</p>
+		<p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+	</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#redeemPoints').change(function() {
+                $('#pointsToRedeem').prop('disabled', !$(this).is(':checked'));
+            });
+
+            $('#placeOrderButton').click(function() {
+                alert('Order placed successfully!');
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script>
+        var app = angular.module('billingApp', []);
+        app.controller('BillingController', ['$scope', function($scope) {
+            // Future logic for handling payments via Node.js API
+        }]);
+    </script>
 </body>
 </html>
