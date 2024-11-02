@@ -224,8 +224,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 
 <script>
-    let cart = {}; // Holds cart items with their quantities
-    let products = {}; // Holds product details
+    let cart = {};
+    let products = {};
 
     function renderCart() {
         const cartItemsContainer = $('#itemSummary');
@@ -324,7 +324,6 @@
 
         $scope.placeOrder = function() {
 			if (validateForm()) {
-				// Gather shipping details
 				const shippingDetails = {
 					address: $('#address').val().trim(),
 					city: $('#city').val().trim(),
@@ -332,26 +331,19 @@
 					zip: $('#zip').val().trim(),
 					carrier: $('#carrier').val(),
 					method: $('#method').val(),
-					cost: parseFloat($('#shippingCost').text().replace('$', '')) || 0
 				};
 
-				// Gather billing details
 				const billingDetails = {
 					paymentType: $('#paymentType').val(),
-					cardNumber: $('#cardNumber').val().trim(),
 					cardHolderName: $('#cardHolderName').val().trim(),
-					expiryDate: $('#expiryDate').val().trim(),
-					cvv: $('#cvv').val().trim()
 				};
 
-				// Create order data with cart, shipping, and billing details
 				const orderData = {
 					cart: cart,
 					shippingDetails: shippingDetails,
 					billingDetails: billingDetails
 				};
 
-				// Send orderData to the server
 				$http.post('http://localhost:3000/api/orders', orderData)
 					.then(response => {
 						const orderId = response.data.orderId;

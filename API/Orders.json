@@ -1,0 +1,22 @@
+{
+  "1": {
+    "id": 1,
+    "cart": {
+      "P005": 1,
+      "P006": 1
+    },
+    "shippingDetails": {
+      "address": "1",
+      "city": "Warminster",
+      "state": "PA",
+      "zip": "18974",
+      "carrier": "FedEx",
+      "method": "Next Day"
+    },
+    "billingDetails": {
+      "paymentType": "Credit Card",
+      "cardHolderName": "1"
+    },
+    "orderDate": "2024-11-02T03:57:27.550Z"
+  }
+}
