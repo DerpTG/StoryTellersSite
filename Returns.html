@@ -1,10 +1,116 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en" ng-app="returnsApp">
 <head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="StoryStyles.css">
+    <style>
+        .main-section {
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+        }
 
-<body>
+        .form-container, .summary-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .form-header {
+            font-weight: bold;
+            padding: 10px;
+            background-color: #bdbdbd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
+<body ng-controller="ReturnsController">
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="HomePage.html">Storytellers</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Teens and Young Adult</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+            </ul>
+            <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
+            <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
+                <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+            </button>
+        </div>
+    </nav>
+</header>
+
+<section class="container">
+    <h2 class="mt-4">Return Your Order</h2>
+    <div class="form-group mt-3">
+        <label for="orderNumber">Enter Order Number</label>
+        <input type="number" id="orderNumber" class="form-control" placeholder="Order Number">
+        <button class="btn btn-primary mt-3" ng-click="loadOrder()">Load Order</button>
+    </div>
+
+    <div id="orderDetails" ng-show="orderLoaded">
+        <h3 class="mt-4">Order Details</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Qty Ordered</th>
+                    <th>Return Qty</th>
+                    <th>Reason for Return</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in orderItems">
+                    <td>{{ item.productDescription }}</td>
+                    <td>{{ item.productPrice | currency }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>
+                        <select class="form-control" ng-model="item.returnQty" ng-options="n for n in [].constructor(item.quantity + 1) track by n"></select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="item.returnReason" placeholder="Reason for Return">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="text-danger"><strong>Important:</strong> Items must be in new condition for a full refund. The refund will be processed to your original form of payment.</p>
+        <button class="btn btn-success mt-3" ng-click="submitReturn()">Submit Return</button>
+    </div>
+</section>
+
+<footer class="text-center bg-dark text-white py-4 mt-4">
+    <p>&copy; 2024 Storytellers. All rights reserved.</p>
+    <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+    <div class="button-group">
+        <button class="btn btn-outline-light" onclick="location.href='returns.html'">Return Items</button>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+<script src="returns.js"></script>
 </body>
 </html>

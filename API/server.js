@@ -175,6 +175,18 @@ app.post('/api/orders', (req, res) => {
     res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
 });
 
+// Get order by ID
+app.get('/api/orders/:orderId', (req, res) => {
+    const orders = readJsonFile(ordersFilePath);
+    const orderId = req.params.orderId;
+
+    if (orders[orderId]) {
+        res.json(orders[orderId]);
+    } else {
+        res.status(404).json({ message: 'Order not found' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
