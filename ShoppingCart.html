@@ -228,7 +228,7 @@
 			$http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
 				.then(response => {
 					console.log("Cart data saved successfully");
-					window.location.href = 'ShippingSelection.html';
+					window.location.href = 'Checkout.html';
 				})
 				.catch(error => {
 					console.error("Error saving cart data:", error);
