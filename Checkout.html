@@ -323,18 +323,47 @@
         });
 
         $scope.placeOrder = function() {
-            if (validateForm()) {
-                $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
-                    .then(response => {
-                        alert("Order placed successfully!");
-                    })
-                    .catch(error => {
-                        console.error("Error placing order:", error);
-                    });
-            } else {
-                alert("Please fill out all required fields.");
-            }
-        };
+			if (validateForm()) {
+				// Gather shipping details
+				const shippingDetails = {
+					address: $('#address').val().trim(),
+					city: $('#city').val().trim(),
+					state: $('#state').val().trim(),
+					zip: $('#zip').val().trim(),
+					carrier: $('#carrier').val(),
+					method: $('#method').val(),
+					cost: parseFloat($('#shippingCost').text().replace('$', '')) || 0
+				};
+
+				// Gather billing details
+				const billingDetails = {
+					paymentType: $('#paymentType').val(),
+					cardNumber: $('#cardNumber').val().trim(),
+					cardHolderName: $('#cardHolderName').val().trim(),
+					expiryDate: $('#expiryDate').val().trim(),
+					cvv: $('#cvv').val().trim()
+				};
+
+				// Create order data with cart, shipping, and billing details
+				const orderData = {
+					cart: cart,
+					shippingDetails: shippingDetails,
+					billingDetails: billingDetails
+				};
+
+				// Send orderData to the server
+				$http.post('http://localhost:3000/api/orders', orderData)
+					.then(response => {
+						const orderId = response.data.orderId;
+						alert(`Order placed successfully! Your Order ID is: ${orderId}`);
+					})
+					.catch(error => {
+						console.error("Error placing order:", error);
+					});
+			} else {
+				alert("Please fill out all required fields.");
+			}
+		};
     }]);
 
     $(document).ready(function() {

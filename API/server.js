@@ -11,6 +11,7 @@ app.use(express.json());
 const shoppersFilePath = path.join(__dirname, 'Shoppers.json');
 const productsFilePath = path.join(__dirname, 'Products.json');
 const cartFilePath = path.join(__dirname, 'ShoppingCartItems.json');
+const ordersFilePath = path.join(__dirname, 'Orders.json');
 
 function readJsonFile(filePath) {
     const data = fs.readFileSync(filePath);
@@ -146,6 +147,32 @@ app.post('/api/shoppingcartitems/checkout', (req, res) => {
     const cartData = req.body;
     writeJsonFile(cartFilePath, cartData);
     res.status(200).json({ message: 'Cart data saved successfully!' });
+});
+
+/* -------------------- Order Routes -------------------- */
+
+// Function to find the next available order ID
+function getNextOrderId(orders) {
+    let id = 1;
+    while (orders[id]) {
+        id++;
+    }
+    return id;
+}
+
+// Place a new order and save to Orders.json
+app.post('/api/orders', (req, res) => {
+    const orders = readJsonFile(ordersFilePath);
+    const newOrderId = getNextOrderId(orders);
+    const newOrder = {
+        id: newOrderId,
+        ...req.body,  // Include cart and any other order data from the request
+        orderDate: new Date().toISOString()
+    };
+
+    orders[newOrderId] = newOrder;
+    writeJsonFile(ordersFilePath, orders);
+    res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
 });
 
 // Start server
