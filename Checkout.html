@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="checkoutApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,7 +68,7 @@
         }
     </style>
 </head>
-<body>
+<body ng-controller="CheckoutController">
 
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -208,7 +208,7 @@
 
     <div class="button-group">
         <button type="button" class="btn-back" onclick="location.href='ShoppingCart.html'">Back</button>
-        <button type="button" class="btn-place-order" id="placeOrderButton">Place Order</button>
+        <button type="button" class="btn-place-order" id="placeOrderButton" ng-click="placeOrder()">Place Order</button>
     </div>
 </section>
 
@@ -247,14 +247,8 @@
                 <tr>
                     <td>${product.productDescription}</td>
                     <td>$${product.productPrice.toFixed(2)}</td>
-                    <td>
-                        <input type="number" class="form-control quantity-select" value="${quantity}" min="1"
-                               onchange="updateQuantity('${productId}', this.value)">
-                    </td>
+                    <td>${quantity}</td>
                     <td>$${total}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="removeFromCart('${productId}')">Remove</button>
-                    </td>
                 </tr>
             `);
         });
@@ -279,13 +273,83 @@
         $('#subtotal').text(`$${subtotal.toFixed(2)}`);
         $('#total').text(`$${subtotal.toFixed(2)}`);
     }
+	
+	function validateForm() {
+        let isValid = true;
+        $('.error').text(''); // Clear previous error messages
+
+        // Shipping address validation
+        const address = $('#address').val().trim();
+        const city = $('#city').val().trim();
+        const state = $('#state').val().trim();
+        const zip = $('#zip').val().trim();
+
+        if (!address) {
+            $('#addressError').text('Address required.');
+            isValid = false;
+        }
+        if (!city) {
+            $('#cityError').text('City required.');
+            isValid = false;
+        }
+        if (!state) {
+            $('#stateError').text('State required.');
+            isValid = false;
+        }
+        if (!zip) {
+            $('#zipError').text('Zip code required.');
+            isValid = false;
+        }
+
+        // Shipping method validation
+        const carrier = $('#carrier').val();
+        const method = $('#method').val();
+        if (!carrier) {
+            $('#carrierError').text('Carrier required.');
+            isValid = false;
+        }
+        if (!method) {
+            $('#methodError').text('Shipping method required.');
+            isValid = false;
+        }
+
+        // Billing details validation
+        const paymentType = $('#paymentType').val();
+        const cardNumber = $('#cardNumber').val().trim();
+        const cardHolderName = $('#cardHolderName').val().trim();
+        const expiryDate = $('#expiryDate').val().trim();
+        const cvv = $('#cvv').val().trim();
+
+        if (!paymentType) {
+            $('#paymentTypeError').text('Payment method required.');
+            isValid = false;
+        }
+        if (!cardNumber || !/^\d{16}$/.test(cardNumber)) {
+            $('#cardNumberError').text('Please enter a valid 16-digit card number.');
+            isValid = false;
+        }
+        if (!cardHolderName) {
+            $('#cardHolderNameError').text('Please enter the cardholder name.');
+            isValid = false;
+        }
+        if (!expiryDate || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+            $('#expiryDateError').text('Please enter a valid expiration date (MM/YY).');
+            isValid = false;
+        }
+        if (!cvv || !/^\d{3,4}$/.test(cvv)) {
+            $('#cvvError').text('Please enter a valid 3 or 4-digit CVV.');
+            isValid = false;
+        }
+
+        return isValid;
+    }
 </script>
 		
 <script>
     var app = angular.module('checkoutApp', []);
 
     app.controller('CheckoutController', ['$scope', '$http', function($scope, $http) {
-        // Load products and cart data
+		// Load products and cart data
         $http.get('api/products.json').then(response => {
             products = response.data;
             console.log("Products JSON loaded", products);
@@ -304,14 +368,18 @@
 
         // Place order function
         $scope.placeOrder = function() {
-            $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
-                .then(response => {
-                    console.log("Cart data saved successfully");
-                    alert("Order placed successfully!");
-                })
-                .catch(error => {
-                    console.error("Error placing order:", error);
-                });
+            if (validateForm()) {
+                $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
+                    .then(response => {
+                        console.log("Cart data saved successfully");
+                        alert("Order placed successfully!");
+                    })
+                    .catch(error => {
+                        console.error("Error placing order:", error);
+                    });
+            } else {
+                alert("Please fill out all required fields.");
+            }
         };
     }]);
 
@@ -342,9 +410,6 @@
         }
     });
 </script>
-
-
-
 </body>
 </html>
 
