@@ -6,8 +6,13 @@
         "productId": "Educated: A Memoir",
         "qtyToReturn": 1,
         "reason": "test"
+      },
+      {
+        "productId": "Silence for the Dead",
+        "qtyToReturn": 1,
+        "reason": "test"
       }
     ],
-    "returnDate": "2024-11-03T02:09:18.671Z"
+    "returnDate": "2024-11-03T03:08:49.239Z"
   }
 }
