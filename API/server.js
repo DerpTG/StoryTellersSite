@@ -175,7 +175,6 @@ app.post('/api/orders', (req, res) => {
     res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
 });
 
-// Get order by ID
 app.get('/api/orders/:orderId', (req, res) => {
     const orders = readJsonFile(ordersFilePath);
     const orderId = req.params.orderId;
