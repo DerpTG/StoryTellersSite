@@ -188,14 +188,21 @@ app.get('/api/orders/:orderId', (req, res) => {
 
 /* -------------------- Return Routes -------------------- */
 app.post('/api/ReturnedItems', (req, res) => {
-    const returns = readJsonFile(returnsFilePath);
+    let returns = readJsonFile(returnsFilePath);
+
+    if (Object.keys(returns).length === 0 && returns.constructor === Object) {
+        returns = {};
+    }
+
+    const orderId = req.body.orderId;
     const newReturn = {
-        orderId: req.body.orderId,
+        orderId: orderId,
         returnItems: req.body.returnItems,
         returnDate: new Date().toISOString()
     };
 
-    returns.push(newReturn);
+    returns[orderId] = newReturn;
+
     writeJsonFile(returnsFilePath, returns);
     res.status(201).json({ message: 'Return submitted successfully!' });
 });
