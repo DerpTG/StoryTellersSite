@@ -187,7 +187,7 @@ app.get('/api/orders/:orderId', (req, res) => {
 });
 
 /* -------------------- Return Routes -------------------- */
-app.post('/api/returns', (req, res) => {
+app.post('/api/ReturnedItems', (req, res) => {
     const returns = readJsonFile(returnsFilePath);
     const newReturn = {
         orderId: req.body.orderId,
