@@ -12,6 +12,8 @@ const shoppersFilePath = path.join(__dirname, 'Shoppers.json');
 const productsFilePath = path.join(__dirname, 'Products.json');
 const cartFilePath = path.join(__dirname, 'ShoppingCartItems.json');
 const ordersFilePath = path.join(__dirname, 'Orders.json');
+const returnsFilePath = path.join(__dirname, 'ReturnedItems.json');
+
 
 function readJsonFile(filePath) {
     const data = fs.readFileSync(filePath);
@@ -151,7 +153,6 @@ app.post('/api/shoppingcartitems/checkout', (req, res) => {
 
 /* -------------------- Order Routes -------------------- */
 
-// Function to find the next available order ID
 function getNextOrderId(orders) {
     let id = 1;
     while (orders[id]) {
@@ -160,13 +161,12 @@ function getNextOrderId(orders) {
     return id;
 }
 
-// Place a new order and save to Orders.json
 app.post('/api/orders', (req, res) => {
     const orders = readJsonFile(ordersFilePath);
     const newOrderId = getNextOrderId(orders);
     const newOrder = {
         id: newOrderId,
-        ...req.body,  // Include cart and any other order data from the request
+        ...req.body,
         orderDate: new Date().toISOString()
     };
 
@@ -185,6 +185,20 @@ app.get('/api/orders/:orderId', (req, res) => {
     } else {
         res.status(404).json({ message: 'Order not found' });
     }
+});
+
+/* -------------------- Return Routes -------------------- */
+app.post('/api/returns', (req, res) => {
+    const returns = readJsonFile(returnsFilePath);
+    const newReturn = {
+        orderId: req.body.orderId,
+        returnItems: req.body.returnItems,
+        returnDate: new Date().toISOString()
+    };
+
+    returns.push(newReturn);
+    writeJsonFile(returnsFilePath, returns);
+    res.status(201).json({ message: 'Return submitted successfully!' });
 });
 
 // Start server
