@@ -234,7 +234,11 @@
         });
 
         $scope.sendCartToBackend = function() {
-            $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
+			const cartArray = Object.keys(cart).map(productId => ({
+				productId: productId,
+				quantity: cart[productId]
+			}));
+            $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cartArray)
                 .then(response => {
                     console.log("Cart data saved successfully");
                     window.location.href = 'Checkout.html';

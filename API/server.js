@@ -156,11 +156,15 @@ app.get('/api/shoppingcartitems', async (req, res) => {
 app.post('/api/shoppingcartitems/checkout', async (req, res) => {
     const db = client.db(dbName);
     const cartData = req.body;
+	
+	if (!Array.isArray(cartData)) {
+        return res.status(400).json({ message: 'Invalid cart data format. Expected an array.' });
+    }
 
     try {
         await db.collection('ShoppingCartItems').deleteMany({});
         await db.collection('ShoppingCartItems').insertMany(cartData.map(item => ({
-            productId: item.productId,
+            _id: item.productId,
             quantity: item.quantity
         })));
 
