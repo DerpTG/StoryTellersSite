@@ -31,7 +31,7 @@ app.get('/api/shoppers', async (req, res) => {
 
 app.get('/api/shoppers/:username', async (req, res) => {
     const db = client.db(dbName);
-    const shopper = await db.collection('Shoppers').findOne({ username: req.params.username });
+    const shopper = await db.collection('Shoppers').findOne({ _id: req.params.username });
     if (shopper) {
         res.json(shopper);
     } else {
@@ -42,44 +42,46 @@ app.get('/api/shoppers/:username', async (req, res) => {
 app.post('/api/shoppers', async (req, res) => {
     const db = client.db(dbName);
     const { username, email, phone, age, address } = req.body;
-    const existingShopper = await db.collection('Shoppers').findOne({ username });
 
+    const existingShopper = await db.collection('Shoppers').findOne({ _id: username });
     if (existingShopper) {
         return res.status(400).json({ message: 'Shopper already exists' });
     }
 
-    const newShopper = { username, email, phone, age, address };
+    const newShopper = {
+        _id: username,
+        email,
+        phone,
+        age,
+        address
+    };
+
     await db.collection('Shoppers').insertOne(newShopper);
     res.status(201).json(newShopper);
 });
 
 app.put('/api/shoppers/:username', async (req, res) => {
     const db = client.db(dbName);
-    const { username, email, phone, age, address } = req.body;
+    const { email, phone, age, address } = req.body;
 
-    const updatedShopper = await db.collection('Shoppers').findOneAndUpdate(
-        { username: req.params.username },
-        { $set: { email, phone, age, address } },
-        { returnDocument: 'after' }
-    );
+    try {
+        const updatedShopper = await db.collection('Shoppers').findOneAndUpdate(
+            { _id: req.params.username }, 
+            { $set: { email, phone, age, address } },
+            { returnDocument: 'after' } 
+        );
 
-    if (updatedShopper.value) {
-        res.json(updatedShopper.value);
-    } else {
-        res.status(404).json({ message: 'Shopper not found' });
+        if (updatedShopper && updatedShopper.value) {
+            res.json(updatedShopper.value);
+        } else {
+            res.status(404).json({ message: 'Shopper not found' });
+        }
+    } catch (error) {
+        console.error("Error during update:", error);
+        res.status(500).json({ message: "An error occurred while updating the shopper." });
     }
 });
 
-app.delete('/api/shoppers/:username', async (req, res) => {
-    const db = client.db(dbName);
-    const result = await db.collection('Shoppers').deleteOne({ username: req.params.username });
-
-    if (result.deletedCount === 1) {
-        res.status(204).end();
-    } else {
-        res.status(404).json({ message: 'Shopper not found' });
-    }
-});
 
 /* -------------------- Product Routes -------------------- */
 

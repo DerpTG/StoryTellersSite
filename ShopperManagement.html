@@ -102,16 +102,22 @@
             };
 
             $scope.updateShopper = function() {
-                if (validateForm()) {
-                    $http.put(`http://localhost:3000/api/shoppers/${$scope.shopper.username}`, $scope.shopper)
-                        .then(function(response) {
-                            alert('Shopper updated successfully!');
-                            console.log(response.data);
-                        }, function(error) {
-                            console.error('Error updating shopper:', error);
-                        });
-                }
-            };
+				if (validateForm()) {
+					$http.put(`http://localhost:3000/api/shoppers/${$scope.shopper.username}`, $scope.shopper)
+						.then(function(response) {
+							alert('Shopper updated successfully!');
+							console.log(response.data);
+						})
+						.catch(function(error) {
+							if (error.status === 404) {
+								alert('Shopper not found. Please check the username and try again.');
+							} else {
+								alert('An error occurred while updating the shopper. Please try again.');
+							}
+							console.error('Error updating shopper:', error);
+						});
+				}
+			};
 
             function validateForm() {
                 let isValid = true;
