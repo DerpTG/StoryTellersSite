@@ -222,7 +222,9 @@
         }).then(response => {
             const existingCart = response.data;
 
-            $.each(existingCart, function(productId, quantity) {
+            $.each(existingCart, function(index, item) {
+				const productId = item._id;
+        		const quantity = item.quantity;
                 if (products[productId]) {
                     cart[productId] = quantity;
                 }
