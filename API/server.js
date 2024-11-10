@@ -111,7 +111,7 @@ app.post('/api/products', async (req, res) => {
     }
 
     const newProduct = {
-        _id: productId,  // Use productId as the MongoDB _id field
+        _id: productId, 
         productDescription,
         productCategory,
         productUOM,
@@ -142,6 +142,32 @@ app.put('/api/products/:productId', async (req, res) => {
     } catch (error) {
         console.error("Error during product update:", error);
         res.status(500).json({ message: "An error occurred while updating the product." });
+    }
+});
+
+/* -------------------- Shopping Cart Routes -------------------- */
+
+app.get('/api/shoppingcartitems', async (req, res) => {
+    const db = client.db(dbName);
+    const cartItems = await db.collection('ShoppingCartItems').find().toArray();
+    res.json(cartItems);
+});
+
+app.post('/api/shoppingcartitems/checkout', async (req, res) => {
+    const db = client.db(dbName);
+    const cartData = req.body;
+
+    try {
+        await db.collection('ShoppingCartItems').deleteMany({});
+        await db.collection('ShoppingCartItems').insertMany(cartData.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity
+        })));
+
+        res.status(200).json({ message: 'Cart data saved successfully!' });
+    } catch (error) {
+        console.error("Error saving cart data:", error);
+        res.status(500).json({ message: 'Error saving cart data' });
     }
 });
 

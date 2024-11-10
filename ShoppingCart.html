@@ -203,40 +203,47 @@
         });
     </script>
 
-    <script>
+ <script>
     var app = angular.module('cartApp', []);
 
-	app.controller('CartController', ['$scope', '$http', function($scope, $http) {
-		$http.get('api/products.json').then(response => {
-			products = response.data;
-			console.log("Products JSON loaded", products);
-			return $http.get('http://localhost:3000/api/shoppingcartitems');
-		}).then(response => {
-			const existingCart = response.data;
+    app.controller('CartController', ['$scope', '$http', function($scope, $http) {
+        $http.get('http://localhost:3000/api/products').then(response => {
+            console.log("Raw products response from MongoDB:", response.data);
+            products = response.data.reduce((acc, product) => {
+                if (product._id) {
+                    acc[product._id] = product;
+                } else {
+                    console.warn("Product missing productId:", product);
+                }
+                return acc;
+            }, {});
+            console.log("Products loaded from MongoDB", products);
+            return $http.get('http://localhost:3000/api/shoppingcartitems');
+        }).then(response => {
+            const existingCart = response.data;
 
-			$.each(existingCart, function(productId, quantity) {
-				if (products[productId]) {
-					cart[productId] = quantity;
-				}
-			});
+            $.each(existingCart, function(productId, quantity) {
+                if (products[productId]) {
+                    cart[productId] = quantity;
+                }
+            });
 
-			renderCart();
-		}).catch(error => {
-			console.error("Error loading cart or products data:", error);
-		});
+            renderCart();
+        }).catch(error => {
+            console.error("Error loading cart or products data:", error);
+        });
 
-		$scope.sendCartToBackend = function() {
-			$http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
-				.then(response => {
-					console.log("Cart data saved successfully");
-					window.location.href = 'Checkout.html';
-				})
-				.catch(error => {
-					console.error("Error saving cart data:", error);
-				});
-		};
-	}]);
-
+        $scope.sendCartToBackend = function() {
+            $http.post('http://localhost:3000/api/shoppingcartitems/checkout', cart)
+                .then(response => {
+                    console.log("Cart data saved successfully");
+                    window.location.href = 'Checkout.html';
+                })
+                .catch(error => {
+                    console.error("Error saving cart data:", error);
+                });
+        };
+    }]);
 </script>
 
 
