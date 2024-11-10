@@ -93,7 +93,7 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:productId', async (req, res) => {
     const db = client.db(dbName);
-    const product = await db.collection('Products').findOne({ productId: req.params.productId });
+    const product = await db.collection('Products').findOne({ _id: req.params.productId });
     if (product) {
         res.json(product);
     } else {
@@ -104,42 +104,44 @@ app.get('/api/products/:productId', async (req, res) => {
 app.post('/api/products', async (req, res) => {
     const db = client.db(dbName);
     const { productId, productDescription, productCategory, productUOM, productPrice, productWeight } = req.body;
-    const existingProduct = await db.collection('Products').findOne({ productId });
 
+    const existingProduct = await db.collection('Products').findOne({ _id: productId });
     if (existingProduct) {
         return res.status(400).json({ message: 'Product already exists' });
     }
 
-    const newProduct = { productId, productDescription, productCategory, productUOM, productPrice, productWeight };
+    const newProduct = {
+        _id: productId,  // Use productId as the MongoDB _id field
+        productDescription,
+        productCategory,
+        productUOM,
+        productPrice,
+        productWeight
+    };
+
     await db.collection('Products').insertOne(newProduct);
     res.status(201).json(newProduct);
 });
 
 app.put('/api/products/:productId', async (req, res) => {
     const db = client.db(dbName);
-    const { productId, productDescription, productCategory, productUOM, productPrice, productWeight } = req.body;
+    const { productDescription, productCategory, productUOM, productPrice, productWeight } = req.body;
 
-    const updatedProduct = await db.collection('Products').findOneAndUpdate(
-        { productId: req.params.productId },
-        { $set: { productDescription, productCategory, productUOM, productPrice, productWeight } },
-        { returnDocument: 'after' }
-    );
+    try {
+        const updatedProduct = await db.collection('Products').findOneAndUpdate(
+            { _id: req.params.productId },
+            { $set: { productDescription, productCategory, productUOM, productPrice, productWeight } },
+            { returnDocument: 'after' } // Returns the updated document after the update
+        );
 
-    if (updatedProduct.value) {
-        res.json(updatedProduct.value);
-    } else {
-        res.status(404).json({ message: 'Product not found' });
-    }
-});
-
-app.delete('/api/products/:productId', async (req, res) => {
-    const db = client.db(dbName);
-    const result = await db.collection('Products').deleteOne({ productId: req.params.productId });
-
-    if (result.deletedCount === 1) {
-        res.status(204).end();
-    } else {
-        res.status(404).json({ message: 'Product not found' });
+        if (updatedProduct && updatedProduct.value) {
+            res.json(updatedProduct.value);
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        console.error("Error during product update:", error);
+        res.status(500).json({ message: "An error occurred while updating the product." });
     }
 });
 
