@@ -181,30 +181,42 @@ app.post('/api/orders', async (req, res) => {
     const db = client.db(dbName);
     const ordersCollection = db.collection('Orders');
 
-    const latestOrder = await ordersCollection.find().sort({ id: -1 }).limit(1).toArray();
-    const newOrderId = latestOrder.length ? latestOrder[0].id + 1 : 1;
+    try {
+        const latestOrder = await ordersCollection.find().sort({ _id: -1 }).limit(1).toArray();
+        const newOrderId = latestOrder.length ? latestOrder[0]._id + 1 : 1;
 
-    const newOrder = {
-        id: newOrderId,
-        ...req.body,
-        orderDate: new Date().toISOString()
-    };
+        const newOrder = {
+            _id: newOrderId,
+            ...req.body,
+            orderDate: new Date().toISOString()
+        };
 
-    await ordersCollection.insertOne(newOrder);
-    res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
+        await ordersCollection.insertOne(newOrder);
+        res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
+    } catch (error) {
+        console.error("Error placing order:", error);
+        res.status(500).json({ message: 'Error placing order' });
+    }
 });
 
 app.get('/api/orders/:orderId', async (req, res) => {
     const db = client.db(dbName);
-    const order = await db.collection('Orders').findOne({ id: parseInt(req.params.orderId) });
+    const ordersCollection = db.collection('Orders');
+    const orderId = parseInt(req.params._id);
 
-    if (order) {
-        res.json(order);
-    } else {
-        res.status(404).json({ message: 'Order not found' });
+    try {
+        const order = await ordersCollection.findOne({ _id: orderId });
+
+        if (order) {
+            res.json(order);
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    } catch (error) {
+        console.error("Error retrieving order:", error);
+        res.status(500).json({ message: 'Error retrieving order' });
     }
 });
-
 /* -------------------- Return Routes -------------------- */
 
 app.post('/api/ReturnedItems', async (req, res) => {
