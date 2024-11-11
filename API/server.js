@@ -202,7 +202,7 @@ app.post('/api/orders', async (req, res) => {
 app.get('/api/orders/:orderId', async (req, res) => {
     const db = client.db(dbName);
     const ordersCollection = db.collection('Orders');
-    const orderId = parseInt(req.params._id);
+    const orderId = parseInt(req.params.orderId);
 
     try {
         const order = await ordersCollection.findOne({ _id: orderId });
@@ -217,20 +217,33 @@ app.get('/api/orders/:orderId', async (req, res) => {
         res.status(500).json({ message: 'Error retrieving order' });
     }
 });
+
 /* -------------------- Return Routes -------------------- */
 
-app.post('/api/ReturnedItems', async (req, res) => {
+app.post('/api/returns', async (req, res) => {
     const db = client.db(dbName);
     const returnsCollection = db.collection('ReturnedItems');
 
+    const orderId = req.body.orderId;
+
     const newReturn = {
-        orderId: req.body.orderId,
+        _id: orderId,
         returnItems: req.body.returnItems,
         returnDate: new Date().toISOString()
     };
 
-    await returnsCollection.insertOne(newReturn);
-    res.status(201).json({ message: 'Return submitted successfully!' });
+    try {
+        const result = await returnsCollection.updateOne(
+            { _id: orderId },
+            { $set: newReturn },
+            { upsert: true }
+        );
+
+        res.status(201).json({ message: 'Return submitted successfully!', returnId: orderId });
+    } catch (error) {
+        console.error("Error submitting return:", error);
+        res.status(500).json({ message: 'Error submitting return' });
+    }
 });
 
 // Start server
