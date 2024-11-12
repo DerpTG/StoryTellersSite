@@ -71,7 +71,7 @@ app.put('/api/shoppers/:username', async (req, res) => {
             { returnDocument: 'after' } 
         );
 
-        if (updatedShopper && updatedShopper.value) {
+        if (updatedShopper) {
             res.json(updatedShopper.value);
         } else {
             res.status(404).json({ message: 'Shopper not found' });
@@ -131,10 +131,10 @@ app.put('/api/products/:productId', async (req, res) => {
         const updatedProduct = await db.collection('Products').findOneAndUpdate(
             { _id: req.params.productId },
             { $set: { productDescription, productCategory, productUOM, productPrice, productWeight } },
-            { returnDocument: 'after' } // Returns the updated document after the update
+            { returnDocument: 'after' }
         );
 
-        if (updatedProduct && updatedProduct.value) {
+        if (updatedProduct) {
             res.json(updatedProduct.value);
         } else {
             res.status(404).json({ message: 'Product not found' });

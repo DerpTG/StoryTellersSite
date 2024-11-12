@@ -117,17 +117,23 @@
             };
 
             $scope.updateProduct = function() {
-                if (validateForm()) {
-                    $http.put(`http://localhost:3000/api/products/${$scope.product.productId}`, $scope.product)
-                        .then(function(response) {
-                            alert('Product updated successfully!');
-                            console.log(response.data);
-                        }, function(error) {
-                            console.error('Error updating product:', error);
-                        });
-                }
-            };
-
+				if (validateForm()) {
+					$http.put(`http://localhost:3000/api/products/${$scope.product.productId}`, $scope.product)
+						.then(function(response) {
+							alert('Product updated successfully!');
+							console.log(response.data);
+						})
+						.catch(function(error) {
+							if (error.status === 404) {
+								alert('Product not found. Please check the Product ID and try again.');
+							} else {
+								alert('An error occurred while updating the product. Please try again.');
+							}
+							console.error('Error updating product:', error);
+						});
+				}
+			};
+			
             function validateForm() {
                 let isValid = true;
                 $('.error').text('');
