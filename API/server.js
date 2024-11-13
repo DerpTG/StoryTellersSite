@@ -84,7 +84,7 @@ app.put('/api/shoppers/:username', async (req, res) => {
 
 app.delete('/api/shoppers/:username', async (req, res) => {
     const db = client.db(dbName);
-    const { username } = req.params;
+    const username = req.params.username;
 
     try {
         const result = await db.collection('Shoppers').deleteOne({ _id: username });
@@ -164,7 +164,7 @@ app.put('/api/products/:productId', async (req, res) => {
 
 app.delete('/api/products/:productId', async (req, res) => {
     const db = client.db(dbName);
-    const { productId } = req.params;
+    const productId = req.params.productID;
 
     try {
         const result = await db.collection('Products').deleteOne({ _id: productId });
