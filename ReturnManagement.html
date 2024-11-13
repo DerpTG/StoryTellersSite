@@ -12,6 +12,31 @@
             background-color: #f8f9fa;
             text-align: center;
         }
+        .return-details {
+            text-align: left;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        .return-details h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .return-details ul {
+            list-style: none;
+            padding: 0;
+        }
+        .return-details li {
+            padding: 5px 0;
+        }
+        .return-details .item {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +74,22 @@
         <button class="btn btn-success" ng-click="viewReturn()">View Return</button>
         <button class="btn btn-danger" ng-click="deleteReturn()">Delete Return</button>
     </div>
-    <div id="returnDetails" class="mt-4" style="display: none;"></div>
+    <div id="returnDetails" class="return-details" ng-show="returnData">
+        <h3>Return Details</h3>
+        <ul>
+            <li><span class="item">Return ID:</span> {{ returnData._id }}</li>
+            <li><span class="item">Return Date:</span> {{ returnData.returnDate }}</li>
+            <li><span class="item">Items Returned:</span>
+                <ul>
+                    <li ng-repeat="item in returnData.returnItems">
+                        <strong>Product:</strong> {{ item.productId }}<br>
+                        <strong>Quantity:</strong> {{ item.qtyToReturn }}<br>
+                        <strong>Reason:</strong> {{ item.reason }}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </section>
 
 <footer class="text-center bg-dark text-white py-4">
@@ -65,6 +105,7 @@
 
     app.controller('ReturnController', ['$scope', '$http', function($scope, $http) {
         $scope.returnId = '';
+        $scope.returnData = null;
         
         $scope.viewReturn = function() {
             if (!$scope.returnId) {
@@ -75,11 +116,11 @@
 
             $http.get(`http://localhost:3000/api/returns/${$scope.returnId}`)
                 .then(function(response) {
-                    $('#returnDetails').html(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`).show();
+                    $scope.returnData = response.data;
                 })
                 .catch(function(error) {
                     alert('Return not found. Please check the ID and try again.');
-                    $('#returnDetails').hide();
+                    $scope.returnData = null;
                     console.error('Error viewing return:', error);
                 });
         };
@@ -94,7 +135,7 @@
             $http.delete(`http://localhost:3000/api/returns/${$scope.returnId}`)
                 .then(function() {
                     alert('Return deleted successfully!');
-                    $('#returnDetails').hide();
+                    $scope.returnData = null;
                 })
                 .catch(function(error) {
                     alert('Error deleting return. Please check the ID and try again.');

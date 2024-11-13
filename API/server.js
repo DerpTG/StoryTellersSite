@@ -221,14 +221,21 @@ app.get('/api/orders/:orderId', async (req, res) => {
 app.delete('/api/orders/:orderId', async (req, res) => {
     const db = client.db(dbName);
     const orderId = parseInt(req.params.orderId);
-    const result = await db.collection('Orders').deleteOne({ id: orderId });
+    
+    try {
+        const result = await db.collection('Orders').deleteOne({ _id: orderId });
 
-    if (result.deletedCount === 1) {
-        res.status(200).json({ message: 'Order deleted successfully!' });
-    } else {
-        res.status(404).json({ message: 'Order not found' });
+        if (result.deletedCount === 1) {
+            res.status(200).json({ message: 'Order deleted successfully!' });
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    } catch (error) {
+        console.error("Error deleting order:", error);
+        res.status(500).json({ message: 'Error deleting order' });
     }
 });
+
 
 /* -------------------- Return Routes -------------------- */
 
