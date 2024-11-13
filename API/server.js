@@ -164,7 +164,7 @@ app.put('/api/products/:productId', async (req, res) => {
 
 app.delete('/api/products/:productId', async (req, res) => {
     const db = client.db(dbName);
-    const productId = req.params.productID;
+    const productId = req.params.productId;
 
     try {
         const result = await db.collection('Products').deleteOne({ _id: productId });
