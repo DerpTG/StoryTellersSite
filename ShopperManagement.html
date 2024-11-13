@@ -12,6 +12,31 @@
             background-color: #f8f9fa;
             text-align: center;
         }
+		.shopper-details {
+            text-align: left;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        .shopper-details h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .shopper-details ul {
+            list-style: none;
+            padding: 0;
+        }
+        .shopper-details li {
+            padding: 5px 0;
+        }
+        .shopper-details .item {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -71,6 +96,29 @@
                 </div>
             </form>
         </div>
+		
+		<div class="form-container mt-5">
+            <h3>Manage Individual Shopper</h3>
+            <div class="form-group">
+                <label for="shopperId">Shopper ID</label>
+                <input type="text" class="form-control" id="shopperId" ng-model="shopperId" placeholder="Enter shopper ID" required>
+                <div class="error text-danger" id="shopperIdError"></div>
+            </div>
+            <button class="btn btn-success" ng-click="viewShopper()">View Shopper</button>
+            <button class="btn btn-danger" ng-click="deleteShopper()">Delete Shopper</button>
+        </div>
+
+        <div id="shopperDetails" class="shopper-details" ng-show="shopperData">
+            <h3>Shopper Details</h3>
+            <ul>
+                <li><span class="item">Shopper ID:</span> {{ shopperData._id }}</li>
+                <li><span class="item">Email:</span> {{ shopperData.email }}</li>
+                <li><span class="item">Phone:</span> {{ shopperData.phone }}</li>
+                <li><span class="item">Age:</span> {{ shopperData.age }}</li>
+                <li><span class="item">Address:</span> {{ shopperData.address }}</li>
+            </ul>
+        </div>
+		
     </section>
 
     <footer class="text-center bg-dark text-white py-4">
@@ -119,6 +167,43 @@
 				}
 			};
 
+			$scope.viewShopper = function() {
+                if (!$scope.shopperId) {
+                    $('#shopperIdError').text('Shopper ID is required.');
+                    return;
+                }
+                $('#shopperIdError').text('');
+
+                $http.get(`http://localhost:3000/api/shoppers/${$scope.shopperId}`)
+                    .then(function(response) {
+                        $scope.shopperData = response.data;
+                    })
+                    .catch(function(error) {
+                        alert('Shopper not found. Please check the ID and try again.');
+                        $scope.shopperData = null;
+                        console.error('Error viewing shopper:', error);
+                    });
+            };
+
+            $scope.deleteShopper = function() {
+                if (!$scope.shopperId) {
+                    $('#shopperIdError').text('Shopper ID is required.');
+                    return;
+                }
+                $('#shopperIdError').text('');
+
+                $http.delete(`http://localhost:3000/api/shoppers/${$scope.shopperId}`)
+                    .then(function() {
+                        alert('Shopper deleted successfully!');
+                        $scope.shopperData = null;
+                    })
+                    .catch(function(error) {
+                        alert('Error deleting shopper. Please check the ID and try again.');
+                        console.error('Error deleting shopper:', error);
+                    });
+            };
+			
+			
             function validateForm() {
                 let isValid = true;
                 $('.error').text('');

@@ -82,6 +82,23 @@ app.put('/api/shoppers/:username', async (req, res) => {
     }
 });
 
+app.delete('/api/shoppers/:username', async (req, res) => {
+    const db = client.db(dbName);
+    const { username } = req.params;
+
+    try {
+        const result = await db.collection('Shoppers').deleteOne({ _id: username });
+
+        if (result.deletedCount === 1) {
+            res.status(200).json({ message: 'Shopper deleted successfully!' });
+        } else {
+            res.status(404).json({ message: 'Shopper not found' });
+        }
+    } catch (error) {
+        console.error("Error deleting shopper:", error);
+        res.status(500).json({ message: "An error occurred while deleting the shopper." });
+    }
+});
 
 /* -------------------- Product Routes -------------------- */
 
@@ -144,6 +161,25 @@ app.put('/api/products/:productId', async (req, res) => {
         res.status(500).json({ message: "An error occurred while updating the product." });
     }
 });
+
+app.delete('/api/products/:productId', async (req, res) => {
+    const db = client.db(dbName);
+    const { productId } = req.params;
+
+    try {
+        const result = await db.collection('Products').deleteOne({ _id: productId });
+
+        if (result.deletedCount === 1) {
+            res.status(200).json({ message: 'Product deleted successfully!' });
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({ message: "An error occurred while deleting the product." });
+    }
+});
+
 
 /* -------------------- Shopping Cart Routes -------------------- */
 

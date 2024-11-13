@@ -12,6 +12,31 @@
             background-color: #f8f9fa;
             text-align: center;
         }
+		.product-details {
+            text-align: left;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        .product-details h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .product-details ul {
+            list-style: none;
+            padding: 0;
+        }
+        .product-details li {
+            padding: 5px 0;
+        }
+        .product-details .item {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -86,6 +111,29 @@
                 </div>
             </form>
         </div>
+		
+		<div class="form-container mt-5">
+            <h3>Manage Individual Product</h3>
+            <div class="form-group">
+                <label for="productIdView">Product ID</label>
+                <input type="text" class="form-control" id="productIdView" ng-model="productId" placeholder="Enter product ID" required>
+                <div class="error text-danger" id="productIdViewError"></div>
+            </div>
+            <button class="btn btn-success" ng-click="viewProduct()">View Product</button>
+            <button class="btn btn-danger" ng-click="deleteProduct()">Delete Product</button>
+        </div>
+
+        <div id="productDetails" class="product-details" ng-show="productData">
+            <h3>Product Details</h3>
+            <ul>
+                <li><span class="item">Product ID:</span> {{ productData._id }}</li>
+                <li><span class="item">Description:</span> {{ productData.productDescription }}</li>
+                <li><span class="item">Category:</span> {{ productData.productCategory }}</li>
+                <li><span class="item">Unit of Measure:</span> {{ productData.productUOM }}</li>
+                <li><span class="item">Price:</span> ${{ productData.productPrice }}</li>
+                <li><span class="item">Weight:</span> {{ productData.productWeight }} lbs</li>
+            </ul>
+        </div>
     </section>
 
     <footer class="text-center bg-dark text-white py-4">
@@ -133,6 +181,42 @@
 						});
 				}
 			};
+			
+			$scope.viewProduct = function() {
+                if (!$scope.productId) {
+                    $('#productIdViewError').text('Product ID is required.');
+                    return;
+                }
+                $('#productIdViewError').text('');
+
+                $http.get(`http://localhost:3000/api/products/${$scope.productId}`)
+                    .then(function(response) {
+                        $scope.productData = response.data;
+                    })
+                    .catch(function(error) {
+                        alert('Product not found. Please check the ID and try again.');
+                        $scope.productData = null;
+                        console.error('Error viewing product:', error);
+                    });
+            };
+
+            $scope.deleteProduct = function() {
+                if (!$scope.productId) {
+                    $('#productIdViewError').text('Product ID is required.');
+                    return;
+                }
+                $('#productIdViewError').text('');
+
+                $http.delete(`http://localhost:3000/api/products/${$scope.productId}`)
+                    .then(function() {
+                        alert('Product deleted successfully!');
+                        $scope.productData = null;
+                    })
+                    .catch(function(error) {
+                        alert('Error deleting product. Please check the ID and try again.');
+                        console.error('Error deleting product:', error);
+                    });
+            };
 			
             function validateForm() {
                 let isValid = true;
