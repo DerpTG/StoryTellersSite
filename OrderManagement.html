@@ -1,10 +1,108 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en" ng-app="orderApp">
 <head>
-<meta charset="utf-8">
-<title>Untitled Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Storytellers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="StoryStyles.css">
+    <style>
+        .order-management-section {
+            padding: 50px 0;
+			background-color: #f8f9fa;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body>
+
+<header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="HomePage.html">Storytellers</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Fiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Nonfiction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Teens And Young Adult</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                </ul>
+				<button class="btn btn-primary mr-2" onclick="location.href='Returns.html'">Returns</button>
+                <button class="btn btn-primary mr-2" onclick="location.href='AdminLogin.html'">Admin Login</button>
+                <button class="btn btn-outline-dark" onclick="location.href='ShoppingCart.html'">
+                    <img src="Assets/cart.jpg" alt="Cart" width="30" height="30">
+                </button>
+            </div>
+        </nav>
+    </header>
+
+<section class="order-management-section" ng-controller="OrderController">
+    <div class="form-container">
+        <h2>Order Management</h2>
+        <div class="form-group">
+            <label for="orderId">Order Number</label>
+            <input type="text" class="form-control" id="orderId" ng-model="orderId" placeholder="Enter order number" required>
+            <div class="error text-danger" id="orderIdError"></div>
+        </div>
+        <button class="btn btn-success" ng-click="viewOrder()">View Order</button>
+        <button class="btn btn-danger" ng-click="deleteOrder()">Delete Order</button>
+    </div>
+    <div id="orderDetails" class="mt-4" style="display: none;"></div>
+</section>
+
+<footer class="text-center bg-dark text-white py-4">
+    <p>&copy; 2024 Storytellers. All rights reserved.</p>
+    <p>Follow us on <a href="#" class="text-light">Instagram</a> | <a href="#" class="text-light">Facebook</a> | <a href="#" class="text-light">Twitter</a></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+<script>
+    var app = angular.module('orderApp', []);
+
+    app.controller('OrderController', ['$scope', '$http', function($scope, $http) {
+        $scope.orderId = '';
+        
+        $scope.viewOrder = function() {
+            if (!$scope.orderId) {
+                $('#orderIdError').text('Order ID is required.');
+                return;
+            }
+            $('#orderIdError').text('');
+
+            $http.get(`http://localhost:3000/api/orders/${$scope.orderId}`)
+                .then(function(response) {
+                    $('#orderDetails').html(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`).show();
+                })
+                .catch(function(error) {
+                    alert('Order not found. Please check the ID and try again.');
+                    $('#orderDetails').hide();
+                    console.error('Error viewing order:', error);
+                });
+        };
+
+        $scope.deleteOrder = function() {
+            if (!$scope.orderId) {
+                $('#orderIdError').text('Order ID is required.');
+                return;
+            }
+            $('#orderIdError').text('');
+
+            $http.delete(`http://localhost:3000/api/orders/${$scope.orderId}`)
+                .then(function() {
+                    alert('Order deleted successfully!');
+                    $('#orderDetails').hide();
+                })
+                .catch(function(error) {
+                    alert('Error deleting order. Please check the ID and try again.');
+                    console.error('Error deleting order:', error);
+                });
+        };
+    }]);
+</script>
+
 </body>
 </html>

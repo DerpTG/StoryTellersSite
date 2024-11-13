@@ -218,6 +218,18 @@ app.get('/api/orders/:orderId', async (req, res) => {
     }
 });
 
+app.delete('/api/orders/:orderId', async (req, res) => {
+    const db = client.db(dbName);
+    const orderId = parseInt(req.params.orderId);
+    const result = await db.collection('Orders').deleteOne({ id: orderId });
+
+    if (result.deletedCount === 1) {
+        res.status(200).json({ message: 'Order deleted successfully!' });
+    } else {
+        res.status(404).json({ message: 'Order not found' });
+    }
+});
+
 /* -------------------- Return Routes -------------------- */
 
 app.post('/api/returns', async (req, res) => {
@@ -243,6 +255,46 @@ app.post('/api/returns', async (req, res) => {
     } catch (error) {
         console.error("Error submitting return:", error);
         res.status(500).json({ message: 'Error submitting return' });
+    }
+});
+
+app.get('/api/returns/:id', async (req, res) => {
+    const db = client.db(dbName);
+    const returnsCollection = db.collection('ReturnedItems');
+
+    const returnId = req.params.id;
+
+    try {
+        const returnData = await returnsCollection.findOne({ _id: returnId });
+
+        if (returnData) {
+            res.json(returnData);
+        } else {
+            res.status(404).json({ message: "Return not found" });
+        }
+    } catch (error) {
+        console.error("Error retrieving return:", error);
+        res.status(500).json({ message: 'Error retrieving return' });
+    }
+});
+
+app.delete('/api/returns/:id', async (req, res) => {
+    const db = client.db(dbName);
+    const returnsCollection = db.collection('ReturnedItems');
+
+    const returnId = req.params.id;
+
+    try {
+        const result = await returnsCollection.deleteOne({ _id: returnId });
+
+        if (result.deletedCount > 0) {
+            res.json({ message: "Return deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Return not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting return:", error);
+        res.status(500).json({ message: 'Error deleting return' });
     }
 });
 

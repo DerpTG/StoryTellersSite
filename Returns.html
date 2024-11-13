@@ -124,7 +124,7 @@
                 return;
             }
 
-            $('#orderIdError').text(''); // Clear error
+            $('#orderIdError').text('');
             $http.get(`http://localhost:3000/api/orders/${orderId}`)
                 .then(response => {
                     const order = response.data;
