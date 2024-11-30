@@ -218,20 +218,41 @@ app.post('/api/orders', async (req, res) => {
     const ordersCollection = db.collection('Orders');
 
     try {
-        const latestOrder = await ordersCollection.find().sort({ _id: -1 }).limit(1).toArray();
-        const newOrderId = latestOrder.length ? latestOrder[0]._id + 1 : 1;
+        const { _id, ...orderDetails } = req.body;
 
-        const newOrder = {
-            _id: newOrderId,
-            ...req.body,
-            orderDate: new Date().toISOString()
-        };
+        if (_id) {
+            const updatedOrder = {
+                ...orderDetails,
+                orderDate: new Date().toISOString(),
+            };
 
-        await ordersCollection.insertOne(newOrder);
-        res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
+            const result = await ordersCollection.updateOne(
+                { _id: parseInt(_id) },
+                { $set: updatedOrder },
+                { upsert: true }
+            );
+
+            if (result.upsertedCount > 0) {
+                res.status(201).json({ message: 'Order created successfully!', orderId: _id });
+            } else {
+                res.status(200).json({ message: 'Order updated successfully!', orderId: _id });
+            }
+        } else {
+            const latestOrder = await ordersCollection.find().sort({ _id: -1 }).limit(1).toArray();
+            const newOrderId = latestOrder.length ? latestOrder[0]._id + 1 : 1;
+
+            const newOrder = {
+                _id: newOrderId,
+                ...orderDetails,
+                orderDate: new Date().toISOString()
+            };
+
+            await ordersCollection.insertOne(newOrder);
+            res.status(201).json({ message: 'Order placed successfully!', orderId: newOrderId });
+        }
     } catch (error) {
-        console.error("Error placing order:", error);
-        res.status(500).json({ message: 'Error placing order' });
+        console.error("Error processing order:", error);
+        res.status(500).json({ message: 'Error processing order' });
     }
 });
 

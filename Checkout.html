@@ -183,9 +183,10 @@
     </div>
 
     <div class="button-group">
-        <button type="button" class="btn-back" onclick="location.href='ShoppingCart.html'">Back</button>
-        <button type="button" class="btn-place-order" id="placeOrderButton" ng-click="placeOrder()">Place Order</button>
-    </div>
+		<button type="button" class="btn-back" onclick="location.href='ShoppingCart.html'">Back</button>
+		<input type="text" id="orderIdInput" placeholder="Enter Manual Order ID" class="form-control d-inline-block" style="width: auto; margin-right: 10px;">
+		<button type="button" class="btn-place-order" id="placeOrderButton" ng-click="placeOrder()">Place Order</button>
+	</div>
 </section>
 
 <footer class="text-center bg-dark text-white py-4">
@@ -312,6 +313,8 @@
 
         $scope.placeOrder = function() {
 			if (validateForm()) {
+				const orderId = $('#orderIdInput').val().trim();
+
 				const shippingDetails = {
 					address: $('#address').val().trim(),
 					city: $('#city').val().trim(),
@@ -327,6 +330,7 @@
 				};
 
 				const orderData = {
+					_id: orderId || undefined,
 					cart: cart,
 					shippingDetails: shippingDetails,
 					billingDetails: billingDetails
@@ -334,11 +338,13 @@
 
 				$http.post('http://localhost:3000/api/orders', orderData)
 					.then(response => {
-						const orderId = response.data.orderId;
-						alert(`Order placed successfully! Your Order ID is: ${orderId}`);
+						const message = orderId
+							? `Order updated successfully! Order ID: ${orderId}`
+							: `Order placed successfully! Your new Order ID is: ${response.data.orderId}`;
+						alert(message);
 					})
 					.catch(error => {
-						console.error("Error placing order:", error);
+						console.error("Error placing/updating order:", error);
 					});
 			} else {
 				alert("Please fill out all required fields.");
